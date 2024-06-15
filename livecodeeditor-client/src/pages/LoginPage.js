@@ -21,7 +21,7 @@ const LoginPage = () => {
       toast.error("Room Id and username is required!");
       return;
     }
-    navigate(`/editor/${roomId}`, {
+    navigate(`/room/${roomId}`, {
       state: {
         username,
       },

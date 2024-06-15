@@ -1,11 +1,15 @@
 import { BrowserRouter } from "react-router-dom";
 import Router from "./routes";
+import ToastReact from "./components/ToastReact";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Router />
-    </BrowserRouter>
+    <>
+      <ToastReact />
+      <BrowserRouter>
+        <Router />
+      </BrowserRouter>
+    </>
   );
 }
 

@@ -14,11 +14,11 @@ export default function Router() {
       //   ],
     },
     {
-      path: "/login",
+      path: "/room",
       element: <LoginPage />,
     },
     {
-      path: "/editor",
+      path: "/room/:roomId",
       element: <EditorPage />,
     },
   ]);

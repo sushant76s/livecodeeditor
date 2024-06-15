@@ -3,6 +3,6 @@ const ROOT_PATH = "";
 
 export const PATHS = {
   root: ROOT_PATH,
-  login: path(ROOT_PATH, "/login"),
-  editor: path(ROOT_PATH, "/editor"),
+  login: path(ROOT_PATH, "/room"),
+  editor: path(ROOT_PATH, "/room/:roomId"),
 };
