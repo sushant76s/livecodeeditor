@@ -1,28 +1,36 @@
 import React, { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import codeImage from "../assets/images/code-image.png";
 
-const LoginPage = () => {
+const RoomPage = () => {
   const navigate = useNavigate();
-  const [userEmail, setUserEmail] = useState("");
-  const [userPassword, setUserPassword] = useState("");
+  const [roomId, setRoomId] = useState("");
+  const [username, setUsername] = useState("");
 
-  const redirectToSignUp = (e) => {
-    navigate("/signup");
+  const createNewRoom = (e) => {
+    e.preventDefault();
+    const id = uuidv4();
+    setRoomId(id);
+    toast.success("Created a new room");
   };
 
-  const validateUser = () => {
-    if (!userEmail || !userPassword) {
-      toast.error("Email and password is required!");
+  const joinRoom = () => {
+    if (!roomId || !username) {
+      toast.error("Room Id and username is required!");
       return;
     }
-    navigate("/");
+    navigate(`/room/${roomId}`, {
+      state: {
+        username,
+      },
+    });
   };
 
   const handleInputEnter = (e) => {
     if (e.code === "Enter") {
-      validateUser();
+      joinRoom();
     }
   };
 
@@ -31,39 +39,39 @@ const LoginPage = () => {
       <div className="p-6 bg-white shadow-md rounded-md w-96">
         <img className="mx-auto w-50 h-25" src={codeImage} alt="logo" />
         <h4 className="text-lg font-semibold text-center mt-4 mb-2">
-          Login to LiveCodeEditor
+          Paste invitation room Id...
         </h4>
         <div className="space-y-4">
           <input
-            type="email"
+            type="text"
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Email Address"
-            onChange={(e) => setUserEmail(e.target.value)}
-            value={userEmail}
+            placeholder="Room ID"
+            onChange={(e) => setRoomId(e.target.value)}
+            value={roomId}
             onKeyUp={handleInputEnter}
           />
           <input
-            type="password"
+            type="text"
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Password"
-            onChange={(e) => setUserPassword(e.target.value)}
-            value={userPassword}
+            placeholder="UserName"
+            onChange={(e) => setUsername(e.target.value)}
+            value={username}
             onKeyUp={handleInputEnter}
           />
           <button
             className="w-full px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-blue-600"
-            onClick={validateUser}
+            onClick={joinRoom}
           >
-            Login
+            Join
           </button>
           <span className="block text-center text-gray-600">
-            If you are a new user create &nbsp;
+            If you don't have invite then create &nbsp;
             <a
-              onClick={redirectToSignUp}
+              onClick={createNewRoom}
               href=""
               className="text-blue-500 hover:underline"
             >
-              account
+              new room
             </a>
           </span>
         </div>
@@ -72,4 +80,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default RoomPage;

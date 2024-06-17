@@ -1,6 +1,12 @@
 import { Navigate, useRoutes } from "react-router-dom";
 import { INITIAL_PATH } from "../config-global";
-import { HomePage, LoginPage, EditorPage } from "./elements";
+import {
+  HomePage,
+  RoomPage,
+  EditorPage,
+  LoginPage,
+  SignupPage,
+} from "./elements";
 
 export default function Router() {
   return useRoutes([
@@ -15,11 +21,19 @@ export default function Router() {
     },
     {
       path: "/room",
-      element: <LoginPage />,
+      element: <RoomPage />,
     },
     {
       path: "/room/:roomId",
       element: <EditorPage />,
+    },
+    {
+      path: "/login",
+      element: <LoginPage />,
+    },
+    {
+      path: "/signup",
+      element: <SignupPage />,
     },
   ]);
 }

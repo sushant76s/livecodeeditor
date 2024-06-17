@@ -3,18 +3,24 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import codeImage from "../assets/images/code-image.png";
 
-const LoginPage = () => {
+const SignUpPage = () => {
   const navigate = useNavigate();
+  const [user, setUser] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
+  const [userPasswordAgain, setUserPasswordAgain] = useState("");
 
-  const redirectToSignUp = (e) => {
-    navigate("/signup");
+  const redirectToLogin = (e) => {
+    navigate("/login");
   };
 
   const validateUser = () => {
-    if (!userEmail || !userPassword) {
-      toast.error("Email and password is required!");
+    if (!userEmail || !userPassword || !user || !userPasswordAgain) {
+      toast.error("All the fields are required!");
+      return;
+    }
+    if (userPassword !== userPasswordAgain) {
+      toast.error("Password did not match!");
       return;
     }
     navigate("/");
@@ -31,9 +37,17 @@ const LoginPage = () => {
       <div className="p-6 bg-white shadow-md rounded-md w-96">
         <img className="mx-auto w-50 h-25" src={codeImage} alt="logo" />
         <h4 className="text-lg font-semibold text-center mt-4 mb-2">
-          Login to LiveCodeEditor
+          SignUp to LiveCodeEditor
         </h4>
         <div className="space-y-4">
+          <input
+            type="text"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Full Name"
+            onChange={(e) => setUser(e.target.value)}
+            value={user}
+            onKeyUp={handleInputEnter}
+          />
           <input
             type="email"
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -50,20 +64,28 @@ const LoginPage = () => {
             value={userPassword}
             onKeyUp={handleInputEnter}
           />
+          <input
+            type="password"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Re-Enter Password"
+            onChange={(e) => setUserPasswordAgain(e.target.value)}
+            value={userPasswordAgain}
+            onKeyUp={handleInputEnter}
+          />
           <button
             className="w-full px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-blue-600"
             onClick={validateUser}
           >
-            Login
+            SignUp
           </button>
           <span className="block text-center text-gray-600">
-            If you are a new user create &nbsp;
+            If you are already a user please &nbsp;
             <a
-              onClick={redirectToSignUp}
+              onClick={redirectToLogin}
               href=""
               className="text-blue-500 hover:underline"
             >
-              account
+              login
             </a>
           </span>
         </div>
@@ -72,4 +94,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default SignUpPage;

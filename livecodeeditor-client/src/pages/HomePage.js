@@ -5,9 +5,16 @@ import codeImage from "../assets/images/code-image.png";
 const HomePage = () => {
   const navigate = useNavigate();
 
-  const redirectToLogin = () => {
-    console.log("Clicked!");
+  const redirectToRoom = () => {
     navigate("/room");
+  };
+
+  const redirectToLogin = () => {
+    navigate("/login");
+  };
+
+  const redirectToSignUp = () => {
+    navigate("/signup");
   };
 
   return (
@@ -71,7 +78,7 @@ const HomePage = () => {
               </div>
               <button
                 className="mt-4 p-2 bg-gray-600 text-white rounded-lg w-full hover:bg-blue-600"
-                onClick={redirectToLogin}
+                onClick={redirectToRoom}
               >
                 Try LiveCodeEditor
               </button>
@@ -84,7 +91,10 @@ const HomePage = () => {
                   coding sessions and chat with peers in real-time.
                 </p>
               </div>
-              <button className="mt-4 p-2 bg-gray-600 text-white rounded-lg w-full hover:bg-blue-600">
+              <button
+                onClick={redirectToLogin}
+                className="mt-4 p-2 bg-gray-600 text-white rounded-lg w-full hover:bg-blue-600"
+              >
                 Login
               </button>
             </div>
@@ -96,7 +106,10 @@ const HomePage = () => {
                   code snippets and chatting with your team instantly.
                 </p>
               </div>
-              <button className="mt-4 p-2 bg-gray-600 text-white rounded-lg w-full hover:bg-blue-600">
+              <button
+                onClick={redirectToSignUp}
+                className="mt-4 p-2 bg-gray-600 text-white rounded-lg w-full hover:bg-blue-600"
+              >
                 Signup
               </button>
             </div>
@@ -170,7 +183,7 @@ const HomePage = () => {
             </div>
             <button
               className="mt-4 p-2 bg-gray-600 text-white rounded-lg w-full hover:bg-blue-600"
-              onClick={redirectToLogin}
+              onClick={redirectToRoom}
             >
               Try LiveCodeEditor
             </button>
@@ -183,7 +196,10 @@ const HomePage = () => {
                 sessions and chat with peers in real-time.
               </p>
             </div>
-            <button className="mt-4 p-2 bg-gray-600 text-white rounded-lg w-full hover:bg-blue-600">
+            <button
+              onClick={redirectToLogin}
+              className="mt-4 p-2 bg-gray-600 text-white rounded-lg w-full hover:bg-blue-600"
+            >
               Login
             </button>
           </div>
@@ -195,7 +211,10 @@ const HomePage = () => {
                 code snippets and chatting with your team instantly.
               </p>
             </div>
-            <button className="mt-4 p-2 bg-gray-600 text-white rounded-lg w-full hover:bg-blue-600">
+            <button
+              onClick={redirectToSignUp}
+              className="mt-4 p-2 bg-gray-600 text-white rounded-lg w-full hover:bg-blue-600"
+            >
               Signup
             </button>
           </div>
