@@ -106,7 +106,7 @@ const EditorPage = () => {
       <div className="flex flex-col h-screen bg-gray-300">
         <div className="md:flex h-full">
           <aside
-            className={`fixed inset-0 bg-gray-800 p-1 transform ${
+            className={`fixed inset-0 bg-gray-500 p-1 transform ${
               leftDrawerOpen ? "translate-x-0 pb-14" : "-translate-x-full"
             } transition-transform md:relative md:transform-none md:w-1/4 md:inset-auto z-50 h-full`}
           >
@@ -122,12 +122,12 @@ const EditorPage = () => {
               leaveRoom={leaveRoom}
             />
           </aside>
-          <main className="flex-1 bg-gray-700 p-0 overflow-y-hidden flex flex-col">
-            <header className="bg-gray-800 p-4 flex justify-center items-center sticky top-0 z-10">
+          <main className="flex-1 bg-gray-500 p-0 overflow-y-hidden flex flex-col">
+            <header className="bg-white rounded-lg m-1 p-2 flex justify-center items-center sticky top-0 z-10">
               <div className="md:hidden flex-1 flex">
                 <button
                   onClick={() => setLeftDrawerOpen(true)}
-                  className="bg-blue-500 text-white px-4 py-2 rounded"
+                  className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-blue-600"
                 >
                   Menu
                 </button>
@@ -136,7 +136,7 @@ const EditorPage = () => {
                 <select
                   value={editorFontSize}
                   onChange={handleEditorFontSize}
-                  className="bg-blue-500 rounded-md px-1 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="bg-gray-600 text-white rounded-md px-2 py-2 focus:outline-none focus:ring-1 focus:ring-blue-600"
                 >
                   <option value="12px">12px</option>
                   <option value="14px">14px</option>
@@ -149,7 +149,7 @@ const EditorPage = () => {
                 <select
                   value={editorTheme}
                   onChange={handleEditorTheme}
-                  className="bg-blue-500 rounded-md px-1 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="bg-gray-600 text-white rounded-md px-2 py-2 focus:outline-none focus:ring-1 focus:ring-blue-600"
                 >
                   <option value="dark">Dark</option>
                   <option value="light">Light</option>
@@ -159,7 +159,7 @@ const EditorPage = () => {
               <div className="md:hidden flex-1 flex items-center justify-center">
                 <button
                   onClick={() => setRightDrawerOpen(true)}
-                  className="bg-blue-500 text-white px-4 py-2 rounded"
+                  className="bg-gray-600 text-white px-4 py-2 rounded"
                 >
                   Chat
                 </button>
@@ -176,7 +176,7 @@ const EditorPage = () => {
             </div>
           </main>
           <aside
-            className={`fixed inset-0 bg-gray-800 p-1 transform ${
+            className={`fixed inset-0 bg-gray-500 p-1 transform ${
               rightDrawerOpen ? "translate-x-0 pb-14" : "translate-x-full"
             } transition-transform md:relative md:transform-none md:w-1/4 md:inset-auto z-50 h-full`}
           >

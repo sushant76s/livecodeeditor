@@ -35,12 +35,12 @@ const ChatRoom = ({ socketRef, roomId, username }) => {
   return (
     <>
       <div className="flex flex-col h-full">
-        <div className="h-10percent bg-gray-700">
-          <div className="mb-2 flex items-center justify-center">
+        <div className="h-10percent">
+          <div className="bg-white rounded-lg p-2 flex items-center justify-center">
             <h2 className="text-lg font-bold">Room Chat</h2>
           </div>
         </div>
-        <div className="h-80percent bg-gray-500 overflow-y-auto">
+        <div className="h-80percent bg-gray-300 overflow-y-auto rounded-lg p-2">
           {messages.map((text, index) => (
             <div
               key={index}
@@ -49,33 +49,33 @@ const ChatRoom = ({ socketRef, roomId, username }) => {
               }`}
             >
               {text.isYou ? (
-                <div className="text-white bg-blue-500 p-2 rounded mr-2">
+                <div className="text-black bg-gray-400 p-2 rounded mr-2">
                   {`${text.username}: ${text.message}`}
                 </div>
               ) : (
-                <div className="text-gray-700 bg-gray-200 p-2 rounded ml-2">
+                <div className="text-black bg-gray-400 p-2 rounded ml-2">
                   {`${text.username}: ${text.message}`}
                 </div>
               )}
             </div>
           ))}
         </div>
-        <div className="h-10percent bg-gray-600 flex">
-          <div className="flex items-center justify-center w-7/10">
+        <div className="h-10percent bg-white flex rounded-lg mt-2 p-2">
+          <div className="flex items-center justify-center w-6/10 bg-gray-500 rounded-lg">
             <input
               type="text"
               placeholder="Type your message..."
-              className="flex-shrink rounded px-2 py-2 ml-1 border-gray-300 focus:border-blue-500 mb-0 w-full"
+              className="flex-shrink rounded px-2 py-2 mx-1 border-none focus:border-blue-500 mb-0 w-full"
               onChange={(e) => setMessage(e.target.value)}
               value={message}
             />
           </div>
-          <div className="flex items-center justify-center w-3/10">
+          <div className="flex items-center justify-center w-4/10">
             <button
-              className="bg-blue-500 text-white p-2 rounded ml-2 w-full"
+              className="bg-gray-600 hover:bg-blue-500 text-white px-3 py-2 rounded ml-2 w-full"
               onClick={sendMessage}
             >
-              Send
+              <i className="fa-solid fa-paper-plane"></i>
             </button>
           </div>
         </div>

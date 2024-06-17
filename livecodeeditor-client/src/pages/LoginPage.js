@@ -35,7 +35,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-300">
       <div className="p-6 bg-white shadow-md rounded-md w-96">
         <img className="mx-auto w-50 h-25" src={codeImage} alt="logo" />
         <h4 className="text-lg font-semibold text-center mt-4 mb-2">
@@ -59,7 +59,7 @@ const LoginPage = () => {
             onKeyUp={handleInputEnter}
           />
           <button
-            className="w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+            className="w-full px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-blue-600"
             onClick={joinRoom}
           >
             Join
@@ -76,18 +76,6 @@ const LoginPage = () => {
           </span>
         </div>
       </div>
-      <footer className="mt-8">
-        <h4>
-          Developed by{" "}
-          <a
-            href="https://github.com/sushant76s"
-            target="_blank"
-            className="text-blue-500 hover:underline"
-          >
-            @Sushant
-          </a>
-        </h4>
-      </footer>
     </div>
   );
 };

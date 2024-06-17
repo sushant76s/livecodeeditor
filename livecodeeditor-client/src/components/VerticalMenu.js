@@ -5,30 +5,31 @@ const VerticalMenu = ({ clients, copyRoomId, leaveRoom }) => {
     <>
       <div className="flex flex-col h-full">
         <div className="h-10percent">
-          <div className="bg-gray-600 pt-2 pb-2 flex items-center justify-center">
+          <div className="bg-white p-2 rounded-lg flex items-center justify-center">
             <h2 className="text-lg font-bold">LiveCodeEditor</h2>
           </div>
         </div>
-        <div className="h-10percent bg-gray-600">
-          <div className="mt-2 mb-2 bg-gray-300 flex items-center justify-center">
+        <div className="h-10percent">
+          <div className=" bg-white rounded-lg p-2 flex items-center justify-center">
             <h2 className="text-lg font-bold">Connected</h2>
           </div>
         </div>
-        <div className="h-60percent bg-gray-500 overflow-y-auto">
+        <div className="h-60percent bg-gray-300 overflow-y-auto p-4 rounded-lg">
           <ul>
             {clients.map((client, index) => (
               <li
                 key={index}
-                className={`py-2 px-4 ${
-                  index % 2 === 0 ? "bg-white-300" : "bg-gray-300"
+                className={`py-2 px-4 m-1 rounded-lg ${
+                  index % 2 === 0 ? "bg-gray-500" : "bg-gray-400"
                 }`}
               >
-                {`User: ${client.username}`}
+                <i className="fa-regular fa-user"></i>
+                {`  ${client.username}`}
               </li>
             ))}
           </ul>
         </div>
-        <div className="h-20percent bg-gray-400 flex">
+        <div className="h-20percent bg-white flex rounded-lg mt-2">
           <div className="flex-1 flex items-center justify-center">
             <button
               onClick={copyRoomId}
