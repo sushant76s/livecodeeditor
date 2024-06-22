@@ -3,6 +3,16 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import codeImage from "../assets/images/code-image.png";
 
+function setCookie(name, value, days) {
+  let expires = "";
+  if (days) {
+    const date = new Date();
+    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+    expires = "; expires=" + date.toUTCString();
+  }
+  document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
 const LoginPage = () => {
   const navigate = useNavigate();
   const [userEmail, setUserEmail] = useState("");
@@ -12,10 +22,42 @@ const LoginPage = () => {
     navigate("/signup");
   };
 
-  const validateUser = () => {
+  const validateUser = async () => {
     if (!userEmail || !userPassword) {
       toast.error("Email and password is required!");
       return;
+    }
+    const loginData = {
+      email: userEmail,
+      password: userPassword,
+    };
+
+    try {
+      const response = await fetch("http://localhost:3001/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(loginData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Network response was not ok");
+      }
+
+      const data = await response.json();
+      // Handle the response data as needed, e.g., store token, user info, etc.
+      // localStorage.setItem('token', data.token);
+
+      // console.log("data: ", data.uid);
+      setCookie("uid", data?.uid, 7);
+
+      toast.success("Logged in successfully!");
+      navigate("/"); // or navigate to a different page like navigate("/dashboard")
+    } catch (error) {
+      toast.error(error.message || "There was an error with the login.");
+      console.error("There was an error!", error);
     }
     navigate("/");
   };

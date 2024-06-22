@@ -14,7 +14,7 @@ const SignUpPage = () => {
     navigate("/login");
   };
 
-  const validateUser = () => {
+  const validateUser = async () => {
     if (!userEmail || !userPassword || !user || !userPasswordAgain) {
       toast.error("All the fields are required!");
       return;
@@ -23,6 +23,34 @@ const SignUpPage = () => {
       toast.error("Password did not match!");
       return;
     }
+
+    const userData = {
+      name: user,
+      email: userEmail,
+      password: userPassword,
+    };
+
+    try {
+      const response = await fetch("http://localhost:3001/api/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      toast.success("User registered successfully!");
+      navigate("/");
+    } catch (error) {
+      toast.error("There was an error with the registration.");
+      console.error("There was an error!", error);
+    }
+
     navigate("/");
   };
 
