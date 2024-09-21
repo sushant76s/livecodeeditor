@@ -44,6 +44,7 @@ const SignUpPage = () => {
       }
 
       const data = await response.json();
+      console.log("data", data);
       toast.success("User registered successfully!");
       navigate("/");
     } catch (error) {

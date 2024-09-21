@@ -1,17 +1,23 @@
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+const dotenv = require("dotenv");
+dotenv.config();
+
 const prisma = require("../config/prisma-db");
-const { v4: uuidv4 } = require("uuid");
-const { getUser, setUser } = require("../services/auth");
+
+const SECRET_KEY = process.env.JWT_SECRET;
 
 async function handleUserSignup(req, res) {
   const { name, email, password } = req.body;
+  const hashedPassword = await bcrypt.hash(password, 10);
   const user = await prisma.User.create({
     data: {
       name,
       email,
-      password,
+      password: hashedPassword,
     },
   });
-  res.json({ message: "user created successfully" });
+  res.json({ message: "User created successfully" });
 }
 
 async function handleUserLogin(req, res) {
@@ -22,30 +28,28 @@ async function handleUserLogin(req, res) {
       where: { email: email },
     });
 
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
+    if (user && (await bcrypt.compare(password, user.password))) {
+      const token = jwt.sign({ email }, SECRET_KEY, { expiresIn: "1h" });
+      res.send({ token, id: user.id });
+    } else {
+      res.status(401).send({ message: "Invalid credentials" });
     }
-
-    const isPasswordValid = password === user.password;
-
-    if (!isPasswordValid) {
-      return res.status(401).json({ error: "Invalid password" });
-    }
-
-    // Remove password from user object before returning
-    const { password: _, ...userWithoutPassword } = user;
-
-    const sessionId = uuidv4();
-    setUser(sessionId, user);
-
-    return res.status(200).json({ user: userWithoutPassword, uid: sessionId });
   } catch (error) {
     console.error("Error during login:", error);
     return res.status(500).json({ error: "Error during login" });
   }
 }
 
+async function userInfo(req, res) {
+  try {
+    res.send({ user: "jake", email: "jake@gmail.com" });
+  } catch (error) {
+    return res.status(500).json({ error: "Something went wrong!" });
+  }
+}
+
 module.exports = {
   handleUserSignup,
   handleUserLogin,
+  userInfo,
 };

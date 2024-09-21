@@ -11,6 +11,7 @@ import toast from "react-hot-toast";
 import CodeEditor from "../components/CodeEditor";
 import ChatRoom from "../components/ChatRoom";
 import VerticalMenu from "../components/VerticalMenu";
+import { getUser } from "../services/UserAPI";
 
 const EditorPage = () => {
   const socketRef = useRef(null);
@@ -100,6 +101,10 @@ const EditorPage = () => {
   function leaveRoom() {
     navigate("/");
   }
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
   return (
     <>

@@ -48,10 +48,11 @@ const LoginPage = () => {
 
       const data = await response.json();
       // Handle the response data as needed, e.g., store token, user info, etc.
-      // localStorage.setItem('token', data.token);
 
-      // console.log("data: ", data.uid);
-      setCookie("uid", data?.uid, 7);
+      console.log("data after login: ", data);
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user_id", data.id);
 
       toast.success("Logged in successfully!");
       navigate("/"); // or navigate to a different page like navigate("/dashboard")

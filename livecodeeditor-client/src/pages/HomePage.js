@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import codeImage from "../assets/images/code-image.png";
+import { getUser } from "../services/UserAPI";
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const [user, setUser] = useState(null);
 
   const redirectToRoom = () => {
     navigate("/room");
@@ -17,33 +19,61 @@ const HomePage = () => {
     navigate("/signup");
   };
 
+  useEffect(() => {
+    async function userInfo() {
+      const user = await getUser();
+      setUser(user);
+    }
+    userInfo();
+  }, [user]);
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/");
+    setUser(null);
+  };
+
   return (
     <div className="min-h-screen p-6 bg-gray-300">
       {/* Desktop view */}
       <div className="hidden md:flex h-full flex-col space-y-8">
         {/* Navbar Action Card */}
         <div className="bg-white text-black p-4 rounded-lg flex items-center justify-between">
-          <button>
-            <h3 className="text-xl font-bold">
-              <i className="fa-solid fa-code mr-2"></i>
-              LiveCodeEditor
-            </h3>
-          </button>
-          {/* Add any links or buttons here */}
-          {/* <button className="ml-auto px-4 py-2 text-white rounded-lg">
-            Github
-          </button> */}
-          <a
-            href="https://github.com/sushant76s/livecodeeditor/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="ml-4"
-          >
-            <button className="bg-gray-600 text-white p-2 rounded-lg flex items-center ml-4 hover:bg-blue-600">
-              <i className="fab fa-github mr-2"></i>
-              GitHub
+          <div className="flex items-center">
+            <button>
+              <h3 className="text-xl font-bold">
+                <i className="fa-solid fa-code mr-2"></i>
+                LiveCodeEditor
+              </h3>
             </button>
-          </a>
+          </div>
+          <div className="flex items-center">
+            {user && (
+              <h4 className="font-bold border rounded-lg p-2">
+                Hi {user?.user}
+              </h4>
+            )}
+            {user && (
+              <button
+                onClick={handleLogout}
+                className="bg-gray-600 text-white p-2 rounded-lg flex items-center ml-4 hover:bg-blue-600"
+              >
+                <i className="fa-solid fa-right-from-bracket mr-2"></i>
+                Logout
+              </button>
+            )}
+            <a
+              href="https://github.com/sushant76s/livecodeeditor/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ml-4"
+            >
+              <button className="bg-gray-600 text-white p-2 rounded-lg flex items-center ml-4 hover:bg-blue-600">
+                <i className="fab fa-github mr-2"></i>
+                GitHub
+              </button>
+            </a>
+          </div>
         </div>
 
         <div className="flex space-x-2">
@@ -83,8 +113,7 @@ const HomePage = () => {
                 Try LiveCodeEditor
               </button>
             </div>
-            {/* Card 3 */}
-            <div className="bg-white text-white p-4 rounded-lg flex flex-col items-center justify-center">
+            <div className="bg-white text-white p-4 rounded-lg flex flex-col items-center justify-center ">
               <div className="bg-white text-black p-4 mt-4 rounded-lg w-full">
                 <p>
                   Access your LiveCodeEditor account to join collaborative
@@ -98,7 +127,6 @@ const HomePage = () => {
                 Login
               </button>
             </div>
-            {/* Card 4 */}
             <div className="bg-white text-white p-4 rounded-lg flex flex-col items-center justify-center">
               <div className="bg-white text-black p-4 mt-4 rounded-lg w-full">
                 <p>
@@ -136,24 +164,36 @@ const HomePage = () => {
       <div className="md:hidden flex flex-col h-full space-y-4">
         {/* Navbar Action Card */}
         <div className="bg-white text-black p-4 rounded-lg flex items-center justify-between">
-          <button>
-            <h3 className="text-xl font-bold">
+          <div className="flex items-center">
+            <button>
               <i className="fa-solid fa-code mr-2"></i>
-              LiveCodeEditor
-            </h3>
-          </button>
-          {/* Add any links or buttons here */}
-          <a
-            href="https://github.com/sushant76s/livecodeeditor/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="ml-4"
-          >
-            <button className="bg-gray-600 text-white p-2 rounded-lg flex items-center ml-4 hover:bg-blue-600">
-              <i className="fab fa-github mr-2"></i>
-              GitHub
             </button>
-          </a>
+          </div>
+          <div className="flex items-center">
+            {user && (
+              <h4 className="font-bold border rounded-lg p-2">
+                Hi {user?.user}
+              </h4>
+            )}
+            {user && (
+              <button
+                onClick={handleLogout}
+                className="bg-gray-600 text-white p-2 rounded-lg flex items-center ml-4 hover:bg-blue-600"
+              >
+                <i className="fa-solid fa-right-from-bracket"></i>
+              </button>
+            )}
+            <a
+              href="https://github.com/sushant76s/livecodeeditor/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ml-4"
+            >
+              <button className="bg-gray-600 text-white p-2 rounded-lg flex items-center ml-4 hover:bg-blue-600">
+                <i className="fab fa-github"></i>
+              </button>
+            </a>
+          </div>
         </div>
 
         {/* Card 1 */}

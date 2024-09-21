@@ -20,4 +20,58 @@ model User {
   password String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  rooms Rooms[] @relation("RoomCreator")
+  roomMembers RoomMember[]
+  codeSnippets CodeSnippet[]
+  chatMessages ChatMessages[]
+}
+
+
+model Room {
+  id Int @id @default(autoincrement())
+  roomId String
+  roomName String
+  creatorId Int
+  createdAt DateTime @default(now())
+  
+  creator User @relation("RoomCreator", fields: [creatorId], references: [id])
+  members RoomMember[]
+  snippets CodeSnippet[]
+  chatMessages ChatMessage[]
+}
+
+
+model RoomMember {
+  roomId Int
+  userId Int
+  joinedAt DateTime @default(now())
+
+  room Room @relation(fields: [roomId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@id([roomId, userId])
+}
+
+
+model CodeSnippet {
+  id Int @id @default(autoincrement())
+  roomId Int
+  userId Int
+  content String
+  createdAt DateTime  @default(now())
+
+  room Room @relation(fields: [roomId], references: [id])
+}
+
+
+ model ChatMessage {
+  id Int @id @default(autoincrement())
+  roomId Int
+  userId Int
+  content String
+  createdAt DateTime @default(now())
+
+  room Room @relation(fields: [roomId], references: [id])
+  user User @relation(fields: [userId], references: [id])
 }
