@@ -92,7 +92,7 @@ function CodeEditor({ editorTheme, fontSize, socketRef, roomId, codeRef }) {
         socketRef.current.off("code-change");
       }
     };
-  }, [roomId, socketRef.current]);
+  }, [roomId, socketRef.current, codeRef]);
 
   const onChange = (val) => {
     if (socketRef.current) {
@@ -101,6 +101,7 @@ function CodeEditor({ editorTheme, fontSize, socketRef, roomId, codeRef }) {
         code: val,
       });
     }
+    codeRef.current = val;
   };
 
   const options = {

@@ -173,6 +173,19 @@ export default function DynamicGridLayout() {
     }
   };
 
+  const handleCopyCode = async () => {
+    if (codeRef.current) {
+      try {
+        const code = codeRef.current; // Get the code from the ref
+        await navigator.clipboard.writeText(code);
+        toast.success("Code has been copied to your clipboard.");
+      } catch (err) {
+        toast.error("Failed to copy the code.");
+        console.error(err);
+      }
+    }
+  };
+
   function leaveRoom() {
     navigate("/");
   }
@@ -229,8 +242,8 @@ export default function DynamicGridLayout() {
                     <MenuItem value="light">Light</MenuItem>
                   </Select>
                 </FormControl>
-                <Button variant="outlined" size="small" sx={{ p: 0 }}>
-                  Btn1
+                <Button variant="outlined" onClick={handleCopyCode}>
+                  Copy Code
                 </Button>
               </Stack>
             </Stack>
