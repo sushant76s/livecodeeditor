@@ -17,12 +17,15 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  Paper,
 } from "@mui/material";
 
 import CodeEditor from "../components/CodeEditor";
 import ChatRoom from "../components/ChatRoom";
 import VerticalMenu from "../components/VerticalMenu";
 import { getUser } from "../services/UserAPI";
+import ChatComponent from "../components/Chat";
+import ListComponent from "../components/List";
 
 const drawerWidth = 300; // Width for Section B (25%)
 
@@ -57,15 +60,16 @@ const AppBarFixed = styled(AppBar)(({ theme }) => ({
 }));
 
 const SectionA = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(1),
+  padding: theme.spacing(0.5),
   backgroundColor: "#f0f0f0",
   height: "100%",
   overflow: "auto",
 }));
 
 const SectionB = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(2),
+  padding: theme.spacing(0.5),
   backgroundColor: "#cfcfcf",
+  // backgroundColor: "#f0f0f0",
   height: "100%",
   overflow: "auto", // Ensure proper scroll behavior
 }));
@@ -186,49 +190,51 @@ export default function DynamicGridLayout() {
       <GridContainer container isHidden={isBHidden}>
         {/* Section A (75%) */}
         <SectionA>
-          <Stack direction="row" justifyContent="space-between" sx={{ mb: 1 }}>
-            <Typography variant="h6">Code Editor</Typography>
+          <Paper sx={{ padding: 1, mb: 1 }}>
+            <Stack direction="row" justifyContent="space-between">
+              <Typography variant="h6">Code Editor</Typography>
 
-            <Stack direction="row-reverse" spacing={2}>
-              {/* First Select Button */}
-              <FormControl sx={{ m: 1, minWidth: 110 }} size="small">
-                {/* <InputLabel id="demo-select-small-label">Font Size</InputLabel> */}
-                <Select
-                  // labelId="demo-select-small-label"
-                  // id="demo-select-small"
-                  value={editorFontSize}
-                  onChange={handleEditorFontSize}
-                  // label="Font Size"
-                  size="small"
-                  // sx={{ p: "4px 0 8px 5px", height: "1em" }}
-                >
-                  <MenuItem value="12px">12px</MenuItem>
-                  <MenuItem value="14px">14px</MenuItem>
-                  <MenuItem value="16px">16px</MenuItem>
-                  <MenuItem value="18px">18px</MenuItem>
-                </Select>
-              </FormControl>
+              <Stack direction="row-reverse" spacing={2}>
+                {/* First Select Button */}
+                <FormControl sx={{ m: 1, minWidth: 110 }} size="small">
+                  {/* <InputLabel id="demo-select-small-label">Font Size</InputLabel> */}
+                  <Select
+                    // labelId="demo-select-small-label"
+                    // id="demo-select-small"
+                    value={editorFontSize}
+                    onChange={handleEditorFontSize}
+                    // label="Font Size"
+                    size="small"
+                    // sx={{ p: "4px 0 8px 5px", height: "1em" }}
+                  >
+                    <MenuItem value="12px">12px</MenuItem>
+                    <MenuItem value="14px">14px</MenuItem>
+                    <MenuItem value="16px">16px</MenuItem>
+                    <MenuItem value="18px">18px</MenuItem>
+                  </Select>
+                </FormControl>
 
-              {/* Second Select Button */}
-              <FormControl sx={{ m: 1, minWidth: 100, p: 0 }} size="small">
-                {/* <InputLabel id="demo-select-small-label">Theme</InputLabel> */}
-                <Select
-                  // labelId="demo-select-small-label"
-                  // id="demo-select-small"
-                  value={editorTheme}
-                  onChange={handleEditorTheme}
-                  // label="Theme"
-                  size="small"
-                >
-                  <MenuItem value="dark">Dark</MenuItem>
-                  <MenuItem value="light">Light</MenuItem>
-                </Select>
-              </FormControl>
-              <Button variant="outlined" size="small" sx={{ p: 0 }}>
-                Btn1
-              </Button>
+                {/* Second Select Button */}
+                <FormControl sx={{ m: 1, minWidth: 100, p: 0 }} size="small">
+                  {/* <InputLabel id="demo-select-small-label">Theme</InputLabel> */}
+                  <Select
+                    // labelId="demo-select-small-label"
+                    // id="demo-select-small"
+                    value={editorTheme}
+                    onChange={handleEditorTheme}
+                    // label="Theme"
+                    size="small"
+                  >
+                    <MenuItem value="dark">Dark</MenuItem>
+                    <MenuItem value="light">Light</MenuItem>
+                  </Select>
+                </FormControl>
+                <Button variant="outlined" size="small" sx={{ p: 0 }}>
+                  Btn1
+                </Button>
+              </Stack>
             </Stack>
-          </Stack>
+          </Paper>
           <CodeEditor
             editorTheme={editorTheme}
             fontSize={editorFontSize}
@@ -242,18 +248,20 @@ export default function DynamicGridLayout() {
         {isBHidden && (
           <SectionB>
             {isUserList && (
-              <VerticalMenu
-                clients={clients}
-                copyRoomId={copyRoomId}
-                leaveRoom={leaveRoom}
-              />
+              // <VerticalMenu
+              //   clients={clients}
+              //   copyRoomId={copyRoomId}
+              //   leaveRoom={leaveRoom}
+              // />
+              <ListComponent />
             )}
             {isChatOpen && (
-              <ChatRoom
-                socketRef={socketRef}
-                roomId={roomId}
-                username={location.state?.username}
-              />
+              // <ChatRoom
+              //   socketRef={socketRef}
+              //   roomId={roomId}
+              //   username={location.state?.username}
+              // />
+              <ChatComponent />
             )}
           </SectionB>
         )}
