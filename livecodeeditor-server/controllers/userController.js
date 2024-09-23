@@ -56,7 +56,7 @@ const SECRET_KEY = process.env.JWT_SECRET;
 
 // Sign Up
 exports.signUp = async (req, res) => {
-  const { fullNam, email, password } = req.body;
+  const { fullName, email, password } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await prisma.user.create({
@@ -83,8 +83,34 @@ exports.signIn = async (req, res) => {
     const token = jwt.sign({ userId: user.id }, SECRET_KEY, {
       expiresIn: "1d",
     });
-    res.status(200).json({ message: "Login successful", token });
+    res
+      .status(200)
+      .json({ message: "Login successful", token, userId: user.id });
   } catch (err) {
     res.status(500).json({ error: "Login failed", err });
+  }
+};
+
+exports.getUserInfo = async (req, res) => {
+  const { userId } = req.user; // Assuming userId is passed in the URL as a param
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: parseInt(userId) }, // Convert userId to an integer if necessary
+      select: {
+        id: true,
+        fullName: true,
+        email: true,
+        // You can add more fields here as needed
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ user });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch user info", err });
   }
 };

@@ -15,7 +15,11 @@
 // module.exports = router;
 
 const express = require("express");
-const { signIn, signUp } = require("../controllers/userController");
+const {
+  signIn,
+  signUp,
+  getUserInfo,
+} = require("../controllers/userController");
 const { createRoom, joinRoom } = require("../controllers/roomController");
 const { roomChat, personalChat } = require("../controllers/chatController");
 const { saveSnippet } = require("../controllers/snippetController");
@@ -26,6 +30,7 @@ const router = express.Router();
 // User routes
 router.post("/signup", signUp);
 router.post("/signin", signIn);
+router.get("/userinfo", authMiddleware, getUserInfo);
 
 // Room routes
 router.post("/create-room", authMiddleware, createRoom);
