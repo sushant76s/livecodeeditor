@@ -23,7 +23,7 @@ import {
 import CodeEditor from "../components/CodeEditor";
 import ChatRoom from "../components/ChatRoom";
 import VerticalMenu from "../components/VerticalMenu";
-import { getUser } from "../services/UserAPI";
+// import { getUser } from "../services/UserAPI";
 import ChatComponent from "../components/Chat";
 import ListComponent from "../components/List";
 
@@ -137,9 +137,9 @@ export default function DynamicGridLayout() {
     };
   }, [roomId]);
 
-  useEffect(() => {
-    getUser();
-  }, []);
+  // useEffect(() => {
+  //   getUser();
+  // }, []);
 
   // const toggleBVisibility = () => {
   //   setIsBHidden(!isBHidden);

@@ -7,11 +7,16 @@ import {
   LoginPage,
   SignupPage,
 } from "./elements";
+import { isAuthenticated } from "../authentication/auth";
+
+const ProtectedRoute = ({ children }) => {
+  return isAuthenticated() ? children : <Navigate to={INITIAL_PATH.login} />;
+};
 
 export default function Router() {
   return useRoutes([
     {
-      path: "/",
+      path: INITIAL_PATH.root,
       element: <HomePage />,
       //   children: [
       //     { element: <Navigate to={INITIAL_PATH} replace />, index: true },
@@ -20,20 +25,20 @@ export default function Router() {
       //   ],
     },
     {
-      path: "/room",
-      element: <RoomPage />,
-    },
-    {
-      path: "/room/:roomId",
-      element: <EditorPage />,
-    },
-    {
-      path: "/login",
+      path: INITIAL_PATH.login,
       element: <LoginPage />,
     },
     {
-      path: "/signup",
+      path: INITIAL_PATH.singup,
       element: <SignupPage />,
+    },
+    {
+      path: INITIAL_PATH.room,
+      element: <RoomPage />,
+    },
+    {
+      path: INITIAL_PATH.editor,
+      element: <EditorPage />,
     },
   ]);
 }

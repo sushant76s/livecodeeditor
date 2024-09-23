@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import codeImage from "../assets/images/code-image.png";
+import { setToken, setUserId } from "../authentication/auth";
+import { userSignIn } from "../services/UserAPI";
 
 function setCookie(name, value, days) {
   let expires = "";
@@ -33,27 +35,22 @@ const LoginPage = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:3001/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(loginData),
-      });
+      // const response = await fetch("http://localhost:3001/api/login", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify(loginData),
+      // });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Network response was not ok");
+      const response = await userSignIn(loginData);
+
+      if (response === null) {
+        throw new Error("Network response was not ok");
       }
-
-      const data = await response.json();
-      // Handle the response data as needed, e.g., store token, user info, etc.
-
-      console.log("data after login: ", data);
-
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user_id", data.id);
-
+      console.log("data after login: ", response);
+      setToken(response.token);
+      setUserId(response.userId);
       toast.success("Logged in successfully!");
       navigate("/"); // or navigate to a different page like navigate("/dashboard")
     } catch (error) {

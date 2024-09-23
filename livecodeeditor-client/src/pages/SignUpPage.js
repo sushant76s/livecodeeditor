@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import codeImage from "../assets/images/code-image.png";
+import { userSignUp } from "../services/UserAPI";
 
 const SignUpPage = () => {
   const navigate = useNavigate();
@@ -25,26 +26,25 @@ const SignUpPage = () => {
     }
 
     const userData = {
-      name: user,
+      fullName: user,
       email: userEmail,
       password: userPassword,
     };
 
     try {
-      const response = await fetch("http://localhost:3001/api/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-      });
+      // const response = await fetch("http://localhost:3001/api/signup", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify(userData),
+      // });
 
-      if (!response.ok) {
+      const response = await userSignUp(userData);
+      if (response === null) {
         throw new Error("Network response was not ok");
       }
-
-      const data = await response.json();
-      console.log("data", data);
+      console.log("User signup: ", response);
       toast.success("User registered successfully!");
       navigate("/");
     } catch (error) {
@@ -52,7 +52,7 @@ const SignUpPage = () => {
       console.error("There was an error!", error);
     }
 
-    navigate("/");
+    navigate("/login");
   };
 
   const handleInputEnter = (e) => {

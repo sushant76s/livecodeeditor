@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import codeImage from "../assets/images/code-image.png";
-import { getUser } from "../services/UserAPI";
+import { userInfo } from "../services/UserAPI";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -20,12 +20,14 @@ const HomePage = () => {
   };
 
   useEffect(() => {
-    async function userInfo() {
-      const user = await getUser();
-      setUser(user);
-    }
-    userInfo();
-  }, [user]);
+    const getUserDetails = async () => {
+      const userDetails = await userInfo();
+      if (userDetails !== null) {
+        setUser(userDetails.user.fullName);
+      }
+    };
+    getUserDetails();
+  }, []);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -49,9 +51,7 @@ const HomePage = () => {
           </div>
           <div className="flex items-center">
             {user && (
-              <h4 className="font-bold border rounded-lg p-2">
-                Hi {user?.user}
-              </h4>
+              <h4 className="font-bold border rounded-lg p-2">Hi {user}</h4>
             )}
             {user && (
               <button
