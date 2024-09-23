@@ -14,64 +14,81 @@ datasource db {
 }
 
 model User {
-  id Int @id @default(autoincrement())
-  email String @unique
-  name String?
-  password String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id              Int            @id @default(autoincrement())
+  fullName        String
+  email           String         @unique
+  password        String
+  profilePhoto    String?        // Optional
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
 
-  rooms Rooms[] @relation("RoomCreator")
-  roomMembers RoomMember[]
-  codeSnippets CodeSnippet[]
-  chatMessages ChatMessages[]
+  // Inverse relation for rooms where the user is part of a room (Many-to-many)
+  rooms           Room[]         @relation("UserRooms")
+
+  // Relation for room admin (One-to-many)
+  adminRooms      Room[]         @relation("RoomAdmin")
+
+  // Personal chat relations (One-to-many)
+  personalChats   PersonalChat[] @relation("SenderChats")
+  receivedChats   PersonalChat[] @relation("ReceiverChats")
+
+  // Inverse relation for connected users
+  connectedUsers  ConnectedUser[]
+
+  // Inverse relation for room chats
+  roomChats       RoomChat[]
 }
-
 
 model Room {
-  id Int @id @default(autoincrement())
-  roomId String
-  roomName String
-  creatorId Int
-  createdAt DateTime @default(now())
-  
-  creator User @relation("RoomCreator", fields: [creatorId], references: [id])
-  members RoomMember[]
-  snippets CodeSnippet[]
-  chatMessages ChatMessage[]
+  id              Int            @id @default(autoincrement())
+  roomId          String
+  roomName        String
+  roomAdmin       User           @relation("RoomAdmin", fields: [roomAdminId], references: [id])
+  roomAdminId     Int
+  createdAt       DateTime       @default(now())
+
+  // Inverse relation for users that are part of this room (Many-to-many)
+  users           User[]         @relation("UserRooms")
+
+  codeSnippets    CodeSnippet[]
+  connectedUsers  ConnectedUser[]
+  roomChats       RoomChat[]
+  personalChats   PersonalChat[]
 }
-
-
-model RoomMember {
-  roomId Int
-  userId Int
-  joinedAt DateTime @default(now())
-
-  room Room @relation(fields: [roomId], references: [id])
-  user User @relation(fields: [userId], references: [id])
-
-  @@id([roomId, userId])
-}
-
 
 model CodeSnippet {
-  id Int @id @default(autoincrement())
-  roomId Int
-  userId Int
-  content String
-  createdAt DateTime  @default(now())
-
-  room Room @relation(fields: [roomId], references: [id])
+  id              Int            @id @default(autoincrement())
+  content         String
+  room            Room           @relation(fields: [roomId], references: [id])
+  roomId          Int
 }
 
+model ConnectedUser {
+  id              Int            @id @default(autoincrement())
+  user            User           @relation(fields: [userId], references: [id])
+  userId          Int
+  room            Room           @relation(fields: [roomId], references: [id])
+  roomId          Int
+}
 
- model ChatMessage {
-  id Int @id @default(autoincrement())
-  roomId Int
-  userId Int
-  content String
-  createdAt DateTime @default(now())
+model RoomChat {
+  id              Int            @id @default(autoincrement())
+  message         String
+  user            User           @relation(fields: [userId], references: [id])
+  userId          Int
+  room            Room           @relation(fields: [roomId], references: [id])
+  roomId          Int
+  createdAt       DateTime       @default(now())
+}
 
-  room Room @relation(fields: [roomId], references: [id])
-  user User @relation(fields: [userId], references: [id])
+model PersonalChat {
+  id              Int            @id @default(autoincrement())
+  message         String
+  sender          User           @relation("SenderChats", fields: [senderId], references: [id])
+  senderId        Int
+  receiver        User           @relation("ReceiverChats", fields: [receiverId], references: [id])
+  receiverId      Int
+  room            Room           @relation(fields: [roomId], references: [id])
+  roomId          Int
+  createdAt       DateTime       @default(now())
 }
