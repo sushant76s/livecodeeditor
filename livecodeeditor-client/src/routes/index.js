@@ -2,8 +2,8 @@ import { Navigate, useRoutes } from "react-router-dom";
 import { INITIAL_PATH } from "../config-global";
 import {
   HomePage,
+  CreateRoomPage,
   RoomPage,
-  EditorPage,
   LoginPage,
   SignupPage,
 } from "./elements";
@@ -33,12 +33,12 @@ export default function Router() {
       element: <SignupPage />,
     },
     {
-      path: INITIAL_PATH.room,
-      element: <RoomPage />,
+      path: INITIAL_PATH.createRoom,
+      element: <CreateRoomPage />,
     },
     {
-      path: INITIAL_PATH.editor,
-      element: <EditorPage />,
+      path: INITIAL_PATH.room,
+      element: <RoomPage />,
     },
   ]);
 }

@@ -1,6 +1,15 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import {
+  TextField,
+  Button,
+  Box,
+  Typography,
+  Link,
+  Container,
+  Paper,
+} from "@mui/material";
 import codeImage from "../assets/images/code-image.png";
 import { setToken, setUserId } from "../authentication/auth";
 import { userSignIn } from "../services/UserAPI";
@@ -20,44 +29,36 @@ const LoginPage = () => {
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
 
-  const redirectToSignUp = (e) => {
+  const redirectToSignUp = () => {
     navigate("/signup");
   };
 
   const validateUser = async () => {
     if (!userEmail || !userPassword) {
-      toast.error("Email and password is required!");
+      toast.error("Email and password are required!");
       return;
     }
+
     const loginData = {
       email: userEmail,
       password: userPassword,
     };
 
     try {
-      // const response = await fetch("http://localhost:3001/api/login", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify(loginData),
-      // });
-
       const response = await userSignIn(loginData);
 
-      if (response === null) {
+      if (!response) {
         throw new Error("Network response was not ok");
       }
-      console.log("data after login: ", response);
+
       setToken(response.token);
       setUserId(response.userId);
       toast.success("Logged in successfully!");
-      navigate("/"); // or navigate to a different page like navigate("/dashboard")
+      navigate("/");
     } catch (error) {
       toast.error(error.message || "There was an error with the login.");
       console.error("There was an error!", error);
     }
-    navigate("/");
   };
 
   const handleInputEnter = (e) => {
@@ -67,48 +68,84 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-300">
-      <div className="p-6 bg-white shadow-md rounded-md w-96">
-        <img className="mx-auto w-50 h-25" src={codeImage} alt="logo" />
-        <h4 className="text-lg font-semibold text-center mt-4 mb-2">
+    <Container component="main" maxWidth="xs">
+      <Paper
+        elevation={6}
+        sx={{
+          padding: 4,
+          marginTop: 8,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Box
+          component="img"
+          src={codeImage}
+          alt="logo"
+          sx={{ width: 150, height: 75 }}
+        />
+        <Typography
+          component="h1"
+          variant="h5"
+          sx={{ marginTop: 2, marginBottom: 2 }}
+        >
           Login to LiveCodeEditor
-        </h4>
-        <div className="space-y-4">
-          <input
-            type="email"
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Email Address"
-            onChange={(e) => setUserEmail(e.target.value)}
+        </Typography>
+        <Box component="form" sx={{ mt: 1 }}>
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="Email Address"
+            name="email"
+            autoComplete="email"
+            autoFocus
             value={userEmail}
+            onChange={(e) => setUserEmail(e.target.value)}
             onKeyUp={handleInputEnter}
           />
-          <input
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Password"
             type="password"
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Password"
-            onChange={(e) => setUserPassword(e.target.value)}
+            id="password"
+            autoComplete="current-password"
             value={userPassword}
+            onChange={(e) => setUserPassword(e.target.value)}
             onKeyUp={handleInputEnter}
           />
-          <button
-            className="w-full px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-blue-600"
+          <Button
+            type="button"
+            fullWidth
+            variant="contained"
+            color="primary"
+            sx={{ mt: 3, mb: 2 }}
             onClick={validateUser}
           >
             Login
-          </button>
-          <span className="block text-center text-gray-600">
-            If you are a new user create &nbsp;
-            <a
-              onClick={redirectToSignUp}
-              href=""
-              className="text-blue-500 hover:underline"
-            >
-              account
-            </a>
-          </span>
-        </div>
-      </div>
-    </div>
+          </Button>
+          <Box mt={2} textAlign="center">
+            <Typography variant="body2">
+              If you are a new user create &nbsp;
+              <Link
+                component="button"
+                variant="body2"
+                onClick={redirectToSignUp}
+              >
+                account
+              </Link>
+            </Typography>
+          </Box>
+        </Box>
+      </Paper>
+    </Container>
   );
 };
 
