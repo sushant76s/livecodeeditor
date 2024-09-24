@@ -21,8 +21,8 @@ import {
 } from "@mui/material";
 
 import CodeEditor from "../components/CodeEditor";
-import ChatRoom from "../components/ChatRoom";
-import VerticalMenu from "../components/VerticalMenu";
+// import ChatRoom from "../components/ChatRoom";
+// import VerticalMenu from "../components/VerticalMenu";
 // import { getUser } from "../services/UserAPI";
 import ChatComponent from "../components/Chat";
 import ListComponent from "../components/List";

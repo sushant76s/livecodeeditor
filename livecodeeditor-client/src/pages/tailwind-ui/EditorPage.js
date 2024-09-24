@@ -9,8 +9,8 @@ import { initSocket } from "../../socket";
 import toast from "react-hot-toast";
 
 import CodeEditor from "../../components/CodeEditor";
-import ChatRoom from "../../components/ChatRoom";
-import VerticalMenu from "../../components/VerticalMenu";
+import ChatRoom from "../../components/unused/ChatRoom";
+import VerticalMenu from "../../components/unused/VerticalMenu";
 import { getUser } from "../../services/UserAPI";
 
 const EditorPage = () => {
