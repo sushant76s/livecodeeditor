@@ -50,14 +50,14 @@ const ListComponent = () => {
     <Box
       sx={{
         width: "100%",
-        height: "100vh",
+        height: "100%",
         backgroundColor: "#f0f0f0",
-        paddingBottom: "48px", // Accounts for the 48px bottom navbar
+        // paddingBottom: "48px", // Accounts for the 48px bottom navbar
       }}
     >
       {/* Title */}
-      <Paper sx={{ width: "100%", padding: 1, mb: 0.5 }}>
-        <Typography variant="h6" gutterBottom>
+      <Paper sx={{ width: "100%", padding: 1, mb: 1 }}>
+        <Typography variant="h6" gutterBottom justifyContent="center" sx={{m: "0.20em 0.15em"}}>
           Connected People
         </Typography>
       </Paper>
@@ -65,14 +65,14 @@ const ListComponent = () => {
       {/* Scrollable List */}
       <Paper
         sx={{
-          height: "calc(100vh - 48px - 70px)", // Subtract 48px for the navbar and 70px for the header area
+          height:  "calc(100% - 77px)", // Subtract 70px for the header area + padding
           overflowY: "auto", // Enable scrolling
-          padding: 2,
+          padding: 0.5,
         }}
       >
         <List>
           {connectedPeople.map((person, index) => (
-            <ListItem key={index}>
+            <ListItem key={index} sx={{pt: 1, pb: 1, p:0}}>
               <ListItemButton onClick={() => selectPerson(person)}>
                 <ListItemText primary={person} />
               </ListItemButton>

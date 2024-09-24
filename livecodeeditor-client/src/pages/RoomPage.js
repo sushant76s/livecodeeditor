@@ -68,8 +68,8 @@ const SectionA = styled(Box)(({ theme }) => ({
 
 const SectionB = styled(Box)(({ theme }) => ({
   padding: theme.spacing(0.5),
-  backgroundColor: "#cfcfcf",
-  // backgroundColor: "#f0f0f0",
+  // backgroundColor: "#cfcfcf",
+  backgroundColor: "#f0f0f0",
   height: "100%",
   overflow: "auto", // Ensure proper scroll behavior
 }));

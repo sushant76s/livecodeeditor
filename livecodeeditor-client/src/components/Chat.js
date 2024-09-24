@@ -47,21 +47,21 @@ const ChatComponent = () => {
     <Box
       sx={{
         width: "100%",
-        height: "100vh",
+        height: "100%",
         backgroundColor: "#f0f0f0",
       }}
     >
       <Paper
         sx={{
           width: "100%",
-          padding: 1,
+          padding: 0.5,
           display: "flex", // Flex container
           justifyContent: "space-between", // Distribute items across the row
           alignItems: "center", // Center vertically
         }}
       >
         {/* Title */}
-        <Typography variant="h6" noWrap>
+        <Typography variant="h6" noWrap sx={{pl: "0.20em"}}>
           Chat
         </Typography>
 
@@ -73,15 +73,15 @@ const ChatComponent = () => {
       </Paper>
 
       {/* Chat Interface */}
-      <Box sx={{ padding: "5px 0 0 0", flexGrow: 1 }}>
+      <Box sx={{ mt: "8px", flexGrow: 1, height: "calc(100% - 77px)" }}>
         {selectedTab === 0 ? (
           // Room Chat Interface
           <Paper
             sx={{
-              height: "calc(90vh - 110px)",
+              height: "100%",
               display: "flex",
               flexDirection: "column",
-              padding: 2,
+              padding: "16px 8px",
             }}
           >
             {/* Scrollable messages area */}
@@ -116,7 +116,7 @@ const ChatComponent = () => {
           <>
             {!selectedPerson ? (
               // List of connected people when no person is selected
-              <Paper sx={{ height: "calc(90vh - 110px)", padding: 2 }}>
+              <Paper sx={{ height: "100%", padding: 2 }}>
                 <Typography variant="h6" gutterBottom>
                   Connected People
                 </Typography>
@@ -134,10 +134,10 @@ const ChatComponent = () => {
               // Personal chat with the selected person
               <Paper
                 sx={{
-                  height: "calc(90vh - 110px)",
+                  height: "100%",
                   display: "flex",
                   flexDirection: "column",
-                  padding: 2,
+                  padding: "16px 8px",
                 }}
               >
                 {/* Back Button */}
