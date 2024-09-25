@@ -20,7 +20,12 @@ const {
   signUp,
   getUserInfo,
 } = require("../controllers/userController");
-const { createRoom, joinRoom } = require("../controllers/roomController");
+const {
+  createRoom,
+  joinRoom,
+  getRoom,
+  roomInfo,
+} = require("../controllers/roomController");
 const { roomChat, personalChat } = require("../controllers/chatController");
 const { saveSnippet } = require("../controllers/snippetController");
 const { authMiddleware } = require("../middlewares/auth");
@@ -35,6 +40,8 @@ router.get("/userinfo", authMiddleware, getUserInfo);
 // Room routes
 router.post("/create-room", authMiddleware, createRoom);
 router.post("/join-room", authMiddleware, joinRoom);
+router.get("/get-room", authMiddleware, getRoom);
+router.post("/get-room-info", authMiddleware, roomInfo);
 
 // Chat routes
 router.post("/room-chat", authMiddleware, roomChat);

@@ -41,7 +41,7 @@ model User {
 
 model Room {
   id              Int            @id @default(autoincrement())
-  roomId          String
+  roomId          String         @unique
   roomName        String
   roomAdmin       User           @relation("RoomAdmin", fields: [roomAdminId], references: [id])
   roomAdminId     Int
