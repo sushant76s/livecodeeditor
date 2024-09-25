@@ -25,3 +25,4 @@ yarn-error.log*
 .env
 keepLayout.js
 /src/components/test
+/src/redux

@@ -28,34 +28,25 @@ import ChatComponent from "../components/Chat";
 import ListComponent from "../components/List";
 import { roomInfo } from "../services/RoomAPI";
 
-const drawerWidth = 300; // Width for Section B (25%)
-
 // Create a container using Grid layout
 const GridContainer = styled(Grid)(({ theme, isHidden }) => ({
   display: "grid",
-  gridTemplateColumns: !isHidden ? "1fr" : "75% 25%", // Dynamic grid columns
-  height: "calc(100vh - 64px)", // Full height minus AppBar height
-  transition: "grid-template-columns 0.3s ease", // Smooth transition
+  gridTemplateColumns: !isHidden ? "1fr" : "75% 25%",
+  height: "calc(100vh - 64px)",
+  transition: "grid-template-columns 0.3s ease",
   padding: theme.spacing(0),
 }));
 
-// const AppBarFixed = styled(AppBar)(({ theme }) => ({
-//   top: "auto",
-//   bottom: 0, // Stick it to the bottom
-//   height: "64px",
-//   zIndex: theme.zIndex.drawer + 1,
-// }));
-
 const AppBarFixed = styled(AppBar)(({ theme }) => ({
   top: "auto",
-  bottom: 0, // Stick it to the bottom
-  height: "48px", // Reduced height
+  bottom: 0,
+  height: "48px",
   zIndex: theme.zIndex.drawer + 1,
-  padding: "0 10px", // Adjust horizontal padding if necessary
-  justifyContent: "center", // Center vertically
+  padding: "0 10px",
+  justifyContent: "center",
   "& .MuiToolbar-root": {
-    minHeight: "48px", // Ensure toolbar height matches the app bar
-    alignItems: "center", // Center content vertically
+    minHeight: "48px",
+    alignItems: "center",
   },
   background: "#cfcfcf",
 }));
@@ -72,7 +63,7 @@ const SectionB = styled(Box)(({ theme }) => ({
   // backgroundColor: "#cfcfcf",
   backgroundColor: "#f0f0f0",
   height: "100%",
-  overflow: "auto", // Ensure proper scroll behavior
+  overflow: "auto",
 }));
 
 export default function RoomPage() {
@@ -83,12 +74,13 @@ export default function RoomPage() {
   const navigate = useNavigate();
 
   const [isBHidden, setIsBHidden] = useState(false);
-  const [isUserList, setIsUserList] = useState(false); // Default to UserList being shown
-  const [isChatOpen, setIsChatOpen] = useState(false); // Default Chat is hidden
+  const [isUserList, setIsUserList] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const [editorFontSize, setEditorFontSize] = useState("12px");
   const [editorTheme, setEditorTheme] = useState("light");
 
   const [clients, setClients] = useState([]);
+  const [roomIntId, setRoomIntId] = useState(null);
 
   console.log("state: ", location.state);
 
@@ -96,6 +88,9 @@ export default function RoomPage() {
     const infoFunction = async () => {
       const res = await roomInfo({ roomId });
       console.log("Room Info: ", res);
+      if (res) {
+        setRoomIntId(res.roomInfo.id);
+      }
     };
     infoFunction();
   }, []);
@@ -114,25 +109,28 @@ export default function RoomPage() {
 
       socketRef.current.emit("join", {
         roomId,
-        username: location.state?.username,
+        user: location.state?.user,
       });
 
       // Listening for joined event
-      socketRef.current.on("joined", ({ clients, username, socketId }) => {
-        if (username !== location.state?.username) {
-          toast.success(`${username} Joined the Room`);
+      socketRef.current.on("joined", ({ clients, user, socketId }) => {
+        if (user.id !== location.state?.user?.id) {
+          toast.success(`${user.fullName} Joined the Room`);
         }
 
         setClients(clients);
-        socketRef.current.emit("sync-code", {
-          code: codeRef.current,
-          socketId,
-        });
+
+        if (codeRef.current) {
+          socketRef.current.emit("sync-code", {
+            code: codeRef.current,
+            socketId,
+          });
+        }
       });
 
       // Listening for DISCONNECTED event
-      socketRef.current.on("disconnected", ({ socketId, username }) => {
-        toast.success(`${username} Left the room.`);
+      socketRef.current.on("disconnected", ({ socketId, user }) => {
+        toast.success(`${user.fullName} Left the room.`);
         setClients((prev) =>
           prev.filter((client) => client.socketId !== socketId)
         );
@@ -147,10 +145,6 @@ export default function RoomPage() {
       }
     };
   }, [roomId]);
-
-  // useEffect(() => {
-  //   getUser();
-  // }, []);
 
   // const toggleBVisibility = () => {
   //   setIsBHidden(!isBHidden);
@@ -187,7 +181,7 @@ export default function RoomPage() {
   const handleCopyCode = async () => {
     if (codeRef.current) {
       try {
-        const code = codeRef.current; // Get the code from the ref
+        const code = codeRef.current;
         await navigator.clipboard.writeText(code);
         toast.success("Code has been copied to your clipboard.");
       } catch (err) {
@@ -219,6 +213,9 @@ export default function RoomPage() {
           <Paper sx={{ padding: 1, mb: 1 }}>
             <Stack direction="row" justifyContent="space-between">
               <Typography variant="h6">Code Editor</Typography>
+              <Typography variant="h6">
+                Room: {location.state?.roomName}
+              </Typography>
 
               <Stack direction="row-reverse" spacing={2}>
                 {/* First Select Button */}
@@ -287,7 +284,14 @@ export default function RoomPage() {
               //   roomId={roomId}
               //   username={location.state?.username}
               // />
-              <ChatComponent />
+              <ChatComponent
+                roomId={roomId}
+                clients={clients}
+                userId={location.state?.user.id}
+                roomIntId={roomIntId}
+                socketRef={socketRef}
+                user={location.state?.user}
+              />
             )}
           </SectionB>
         )}

@@ -33,13 +33,13 @@ const CreateRoomPage = () => {
 
   useEffect(() => {
     const getRoomList = async () => {
-      const roomList = await getRoom(); // Assuming this returns an array of rooms
+      const roomList = await getRoom();
       console.log("Room List: ", roomList);
       if (roomList) {
         setRooms(
           roomList.roomList.map((room) => ({
-            id: room.roomId, // Assuming room object has 'id'
-            name: room.roomName, // Assuming room object has 'name'
+            id: room.roomId,
+            name: room.roomName,
           }))
         );
       }
@@ -66,18 +66,17 @@ const CreateRoomPage = () => {
     console.log("List: ", room);
     setRoomId(room.id);
     setRoomName(room.name);
-    // call update room api
-    // const data = {
-    //   roomId,
-    // };
+    // Join Room API
     const joinedRoomResponse = await joinRoom({ roomId: room.id });
     console.log("Joined Room: ", joinedRoomResponse);
-    navigate(`/room/${room.id}`, {
-      state: {
-        roomName: room.name,
-        username: location.state?.user?.fullName,
-      },
-    });
+    if (joinedRoomResponse) {
+      navigate(`/room/${room.id}`, {
+        state: {
+          roomName: room.name,
+          user: location.state?.user,
+        },
+      });
+    }
   };
 
   const joinRoomUsingForm = async () => {
@@ -85,18 +84,20 @@ const CreateRoomPage = () => {
       toast.error("Room ID and roomName are required!");
       return;
     }
-    // call create room api
+    // Create Room API
     const createdRoomResponse = await createRoom({
       roomId,
       roomName,
     });
     console.log("Created Room Response: ", createdRoomResponse);
-    navigate(`/room/${roomId}`, {
-      state: {
-        roomName,
-        username: location.state?.user?.fullName,
-      },
-    });
+    if (createdRoomResponse) {
+      navigate(`/room/${roomId}`, {
+        state: {
+          roomName,
+          user: location.state?.user,
+        },
+      });
+    }
   };
 
   const joinRoomUsingId = async () => {
@@ -104,18 +105,20 @@ const CreateRoomPage = () => {
       toast.error("Room ID and roomName are required!");
       return;
     }
-    // call create room api
     const data = {
       roomId,
     };
+    // Join Room API
     const joinedRoomResponse = await joinRoom(data);
     console.log("Joined Room: ", joinedRoomResponse);
-    navigate(`/room/${roomId}`, {
-      state: {
-        roomName,
-        username: location.state?.user?.fullName,
-      },
-    });
+    if (joinedRoomResponse) {
+      navigate(`/room/${roomId}`, {
+        state: {
+          roomName: joinedRoomResponse.room.roomName,
+          user: location.state?.user,
+        },
+      });
+    }
   };
 
   const handleInputEnter = (e) => {
@@ -166,8 +169,8 @@ const CreateRoomPage = () => {
         {tabValue === 0 && (
           <Box
             sx={{
-              maxHeight: "300px", // Set fixed height
-              overflowY: "auto", // Make list scrollable
+              maxHeight: "300px",
+              overflowY: "auto",
             }}
           >
             {rooms.length > 0 ? (
@@ -206,9 +209,6 @@ const CreateRoomPage = () => {
               label="Room ID"
               variant="outlined"
               value={roomId}
-              // InputProps={{
-              //   readOnly: true, // or use disabled: true if you prefer
-              // }}
               disabled
             />
             <TextField

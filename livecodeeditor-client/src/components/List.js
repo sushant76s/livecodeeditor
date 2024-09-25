@@ -10,41 +10,13 @@ import {
 } from "@mui/material";
 
 const ListComponent = ({ clients }) => {
-  const [selectedPerson, setSelectedPerson] = useState(null); // For personal chat
-  const connectedPeople = [
-    "Alice",
-    "Bob",
-    "Charlie",
-    "a",
-    "b",
-    "c",
-    "d",
-    "Alice",
-    "Bob",
-    "Charlie",
-    "a",
-    "b",
-    "c",
-    "d",
-    "Alice",
-    "Bob",
-    "Charlie",
-    "a",
-    "b",
-    "c",
-    "d",
-    "Alice",
-    "Bob",
-    "Charlie",
-    "a",
-    "b",
-    "c",
-    "d",
-  ]; // Example list of connected people
+  const [selectedPerson, setSelectedPerson] = useState(null);
 
   const selectPerson = (person) => {
     setSelectedPerson(person);
   };
+
+  console.log("clients in list: ", clients);
 
   return (
     <Box
@@ -52,7 +24,7 @@ const ListComponent = ({ clients }) => {
         width: "100%",
         height: "100%",
         backgroundColor: "#f0f0f0",
-        // paddingBottom: "48px", // Accounts for the 48px bottom navbar
+        // paddingBottom: "48px",
       }}
     >
       {/* Title */}
@@ -70,8 +42,8 @@ const ListComponent = ({ clients }) => {
       {/* Scrollable List */}
       <Paper
         sx={{
-          height: "calc(100% - 77px)", // Subtract 70px for the header area + padding
-          overflowY: "auto", // Enable scrolling
+          height: "calc(100% - 77px)",
+          overflowY: "auto",
           padding: 0.5,
         }}
       >
@@ -79,8 +51,8 @@ const ListComponent = ({ clients }) => {
           {clients &&
             clients.map((person, index) => (
               <ListItem key={index} sx={{ pt: 1, pb: 1, p: 0 }}>
-                <ListItemButton onClick={() => selectPerson(person.username)}>
-                  <ListItemText primary={person.username} />
+                <ListItemButton onClick={() => selectPerson(person.user.id)}>
+                  <ListItemText primary={person.user.fullName} />
                 </ListItemButton>
               </ListItem>
             ))}
