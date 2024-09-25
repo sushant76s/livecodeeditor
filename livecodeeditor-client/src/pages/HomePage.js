@@ -17,13 +17,20 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import CodeIcon from "@mui/icons-material/Code";
 import codeImage from "../assets/images/code-image.png";
 import { userInfo } from "../services/UserAPI";
+import { INITIAL_PATH } from "../config-global";
+
+const guestUserId = process.env.REACT_APP_GUEST_USER_ID;
 
 const HomePage = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
 
-  const redirectToRoom = () => {
-    navigate("/room");
+  const handleCreateRoom = () => {
+    navigate(INITIAL_PATH.createRoom, {
+      state: {
+        user,
+      },
+    });
   };
 
   const redirectToLogin = () => {
@@ -34,11 +41,16 @@ const HomePage = () => {
     navigate("/signup");
   };
 
+  const handleTryEditor = () => {
+    navigate(`${INITIAL_PATH.createRoom}/${guestUserId}`);
+  };
+
   useEffect(() => {
     const getUserDetails = async () => {
       const userDetails = await userInfo();
+      // console.log(userDetails);
       if (userDetails !== null) {
-        setUser(userDetails.user.fullName);
+        setUser(userDetails.user);
       }
     };
     getUserDetails();
@@ -64,7 +76,7 @@ const HomePage = () => {
           </Typography>
           {user && (
             <Typography variant="h6" component="div" sx={{ mr: 2 }}>
-              Hi, {user}
+              Hi, {user.fullName}
             </Typography>
           )}
           {user && (
@@ -121,50 +133,65 @@ const HomePage = () => {
                 <Typography variant="body1" color="text.secondary">
                   Experience real-time collaborative coding with LiveCodeEditor!
                 </Typography>
-                <Button
-                  variant="contained"
-                  fullWidth
-                  sx={{ mt: 2 }}
-                  onClick={redirectToRoom}
-                >
-                  Try LiveCodeEditor
-                </Button>
+                {user ? (
+                  <Button
+                    variant="contained"
+                    fullWidth
+                    sx={{ mt: 2 }}
+                    onClick={handleCreateRoom}
+                  >
+                    LiveCodeEditor
+                  </Button>
+                ) : (
+                  <Button
+                    variant="contained"
+                    fullWidth
+                    sx={{ mt: 2 }}
+                    onClick={handleTryEditor}
+                  >
+                    Try as Guest
+                  </Button>
+                )}
               </CardContent>
             </Card>
 
-            <Card sx={{ mb: 2 }}>
-              <CardContent>
-                <Typography variant="body1" color="text.secondary">
-                  Access your LiveCodeEditor account to join collaborative
-                  coding sessions and chat with peers in real-time.
-                </Typography>
-                <Button
-                  variant="contained"
-                  fullWidth
-                  sx={{ mt: 2 }}
-                  onClick={redirectToLogin}
-                >
-                  Login
-                </Button>
-              </CardContent>
-            </Card>
+            {!user && (
+              <>
+                <Card sx={{ mb: 2 }}>
+                  <CardContent>
+                    <Typography variant="body1" color="text.secondary">
+                      Access your LiveCodeEditor account to join collaborative
+                      coding sessions and chat with peers in real-time.
+                    </Typography>
+                    <Button
+                      variant="contained"
+                      fullWidth
+                      sx={{ mt: 2 }}
+                      onClick={redirectToLogin}
+                    >
+                      Login
+                    </Button>
+                  </CardContent>
+                </Card>
 
-            <Card>
-              <CardContent>
-                <Typography variant="body1" color="text.secondary">
-                  Create your LiveCodeEditor account to start collaborating on
-                  code snippets and chatting with your team instantly.
-                </Typography>
-                <Button
-                  variant="contained"
-                  fullWidth
-                  sx={{ mt: 2 }}
-                  onClick={redirectToSignUp}
-                >
-                  Signup
-                </Button>
-              </CardContent>
-            </Card>
+                <Card>
+                  <CardContent>
+                    <Typography variant="body1" color="text.secondary">
+                      Create your LiveCodeEditor account to start collaborating
+                      on code snippets and chatting with your team instantly.
+                    </Typography>
+                    <Button
+                      variant="contained"
+                      fullWidth
+                      sx={{ mt: 2 }}
+                      onClick={redirectToSignUp}
+                    >
+                      Signup
+                    </Button>
+                  </CardContent>
+                </Card>
+              </>
+            )}
           </Grid>
         </Grid>
       </Container>

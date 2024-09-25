@@ -26,6 +26,7 @@ import CodeEditor from "../components/CodeEditor";
 // import { getUser } from "../services/UserAPI";
 import ChatComponent from "../components/Chat";
 import ListComponent from "../components/List";
+import { roomInfo } from "../services/RoomAPI";
 
 const drawerWidth = 300; // Width for Section B (25%)
 
@@ -88,6 +89,16 @@ export default function RoomPage() {
   const [editorTheme, setEditorTheme] = useState("light");
 
   const [clients, setClients] = useState([]);
+
+  console.log("state: ", location.state);
+
+  useEffect(() => {
+    const infoFunction = async () => {
+      const res = await roomInfo({ roomId });
+      console.log("Room Info: ", res);
+    };
+    infoFunction();
+  }, []);
 
   useEffect(() => {
     const init = async () => {
@@ -198,6 +209,8 @@ export default function RoomPage() {
     setEditorTheme(event.target.value);
   };
 
+  console.log("clients: ", clients);
+
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100vh" }}>
       <GridContainer container isHidden={isBHidden}>
@@ -266,7 +279,7 @@ export default function RoomPage() {
               //   copyRoomId={copyRoomId}
               //   leaveRoom={leaveRoom}
               // />
-              <ListComponent />
+              <ListComponent clients={clients} />
             )}
             {isChatOpen && (
               // <ChatRoom

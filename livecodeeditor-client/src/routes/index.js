@@ -34,11 +34,19 @@ export default function Router() {
     },
     {
       path: INITIAL_PATH.createRoom,
-      element: <CreateRoomPage />,
+      element: (
+        <ProtectedRoute>
+          <CreateRoomPage />
+        </ProtectedRoute>
+      ),
     },
     {
       path: INITIAL_PATH.room,
-      element: <RoomPage />,
+      element: (
+        <ProtectedRoute>
+          <RoomPage />
+        </ProtectedRoute>
+      ),
     },
   ]);
 }

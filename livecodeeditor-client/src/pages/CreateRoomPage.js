@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -18,29 +18,35 @@ import {
   Divider,
 } from "@mui/material";
 import codeImage from "../assets/images/code-image.png";
+import { createRoom, getRoom, joinRoom } from "../services/RoomAPI";
 
 const CreateRoomPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [roomId, setRoomId] = useState("");
-  const [username, setUsername] = useState("");
+  const [roomName, setRoomName] = useState("");
   const [tabValue, setTabValue] = useState(0);
 
-  const [rooms, setRooms] = useState([
-    { id: "room1", name: "Room 1" },
-    { id: "room2", name: "Room 2" },
-    { id: "room3", name: "Room 3" },
-    { id: "room4", name: "Room 4" },
-    { id: "room5", name: "Room 5" },
-    { id: "room6", name: "Room 6" },
-    { id: "room7", name: "Room 7" },
-    { id: "room8", name: "Room 8" },
-    { id: "room9", name: "Room 9" },
-  ]);
+  const [rooms, setRooms] = useState([]);
 
-  // useEffect(() => {
-  //   const id = uuidv4();
-  //   setRoomId(id); // Automatically generate and set the room ID
-  // }, []);
+  console.log("sdlkjf: ", location.state);
+
+  useEffect(() => {
+    const getRoomList = async () => {
+      const roomList = await getRoom(); // Assuming this returns an array of rooms
+      console.log("Room List: ", roomList);
+      if (roomList) {
+        setRooms(
+          roomList.roomList.map((room) => ({
+            id: room.roomId, // Assuming room object has 'id'
+            name: room.roomName, // Assuming room object has 'name'
+          }))
+        );
+      }
+    };
+
+    getRoomList();
+  }, []);
 
   const createNewRoom = (e) => {
     e.preventDefault();
@@ -56,32 +62,66 @@ const CreateRoomPage = () => {
     setTabValue(2);
   };
 
-  const joinRoom = () => {
-    if (!roomId || !username) {
-      toast.error("Room ID and username are required!");
+  const joinRoomFromList = async (room) => {
+    console.log("List: ", room);
+    setRoomId(room.id);
+    setRoomName(room.name);
+    // call update room api
+    // const data = {
+    //   roomId,
+    // };
+    const joinedRoomResponse = await joinRoom({ roomId: room.id });
+    console.log("Joined Room: ", joinedRoomResponse);
+    navigate(`/room/${room.id}`, {
+      state: {
+        roomName: room.name,
+        username: location.state?.user?.fullName,
+      },
+    });
+  };
+
+  const joinRoomUsingForm = async () => {
+    if (!roomId || !roomName) {
+      toast.error("Room ID and roomName are required!");
       return;
     }
+    // call create room api
+    const createdRoomResponse = await createRoom({
+      roomId,
+      roomName,
+    });
+    console.log("Created Room Response: ", createdRoomResponse);
     navigate(`/room/${roomId}`, {
       state: {
-        username,
+        roomName,
+        username: location.state?.user?.fullName,
+      },
+    });
+  };
+
+  const joinRoomUsingId = async () => {
+    if (!roomId) {
+      toast.error("Room ID and roomName are required!");
+      return;
+    }
+    // call create room api
+    const data = {
+      roomId,
+    };
+    const joinedRoomResponse = await joinRoom(data);
+    console.log("Joined Room: ", joinedRoomResponse);
+    navigate(`/room/${roomId}`, {
+      state: {
+        roomName,
+        username: location.state?.user?.fullName,
       },
     });
   };
 
   const handleInputEnter = (e) => {
     if (e.code === "Enter") {
-      joinRoom();
+      joinRoomUsingForm();
     }
-  };
-
-  const handleRoomClick = (room) => {
-    setRoomId(room.id);
-    setUsername(room.name);
-    navigate(`/room/${room.id}`, {
-      state: {
-        username: room.name,
-      },
-    });
   };
 
   const handleTabChange = (event, newValue) => {
@@ -104,7 +144,7 @@ const CreateRoomPage = () => {
       minHeight="100vh"
       sx={{ backgroundColor: "#f3f4f6" }}
     >
-      <Card sx={{ padding: 3, width: 400, boxShadow: 3 }}>
+      <Card sx={{ padding: 3, width: 500, boxShadow: 3 }}>
         <CardMedia
           component="img"
           height="200"
@@ -134,7 +174,7 @@ const CreateRoomPage = () => {
               <List>
                 {rooms.map((room) => (
                   <div key={room.id}>
-                    <ListItem button onClick={() => handleRoomClick(room)}>
+                    <ListItem button onClick={() => joinRoomFromList(room)}>
                       <ListItemText primary={room.name} />
                     </ListItem>
                     <Divider />
@@ -149,7 +189,7 @@ const CreateRoomPage = () => {
                 <Button
                   variant="contained"
                   sx={{ mt: 2 }}
-                  onClick={() => setTabValue(1)}
+                  onClick={createNewRoom}
                 >
                   Create a New Room
                 </Button>
@@ -176,8 +216,8 @@ const CreateRoomPage = () => {
               margin="normal"
               label="Room Name"
               variant="outlined"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={roomName}
+              onChange={(e) => setRoomName(e.target.value)}
               onKeyUp={handleInputEnter}
             />
             <Button
@@ -185,7 +225,7 @@ const CreateRoomPage = () => {
               variant="contained"
               color="primary"
               sx={{ mt: 2 }}
-              onClick={joinRoom}
+              onClick={joinRoomUsingForm}
             >
               Create & Join Room
             </Button>
@@ -219,7 +259,7 @@ const CreateRoomPage = () => {
               variant="contained"
               color="primary"
               sx={{ mt: 2 }}
-              onClick={joinRoom}
+              onClick={joinRoomUsingId}
             >
               Join Room
             </Button>

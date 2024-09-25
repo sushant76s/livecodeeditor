@@ -52,7 +52,6 @@ const LoginPage = () => {
       }
 
       setToken(response.token);
-      setUserId(response.userId);
       toast.success("Logged in successfully!");
       navigate("/");
     } catch (error) {

@@ -61,7 +61,7 @@ const ChatComponent = () => {
         }}
       >
         {/* Title */}
-        <Typography variant="h6" noWrap sx={{pl: "0.20em"}}>
+        <Typography variant="h6" noWrap sx={{ pl: "0.20em" }}>
           Chat
         </Typography>
 
