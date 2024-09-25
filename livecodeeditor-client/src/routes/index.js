@@ -35,17 +35,17 @@ export default function Router() {
     {
       path: INITIAL_PATH.createRoom,
       element: (
-        <ProtectedRoute>
-          <CreateRoomPage />
-        </ProtectedRoute>
+        // <ProtectedRoute>
+        <CreateRoomPage />
+        // </ProtectedRoute>
       ),
     },
     {
       path: INITIAL_PATH.room,
       element: (
-        <ProtectedRoute>
-          <RoomPage />
-        </ProtectedRoute>
+        // <ProtectedRoute>
+        <RoomPage />
+        // </ProtectedRoute>
       ),
     },
   ]);

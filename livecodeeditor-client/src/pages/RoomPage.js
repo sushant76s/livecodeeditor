@@ -82,7 +82,8 @@ export default function RoomPage() {
   const [clients, setClients] = useState([]);
   const [roomIntId, setRoomIntId] = useState(null);
 
-  console.log("state: ", location.state);
+  console.log("state in room page: ", location.state);
+  const guestUser = location.state?.isGuest;
 
   useEffect(() => {
     const infoFunction = async () => {
@@ -92,7 +93,9 @@ export default function RoomPage() {
         setRoomIntId(res.roomInfo.id);
       }
     };
-    infoFunction();
+    if (!guestUser) {
+      infoFunction();
+    }
   }, []);
 
   useEffect(() => {

@@ -29,6 +29,7 @@ const HomePage = () => {
     navigate(INITIAL_PATH.createRoom, {
       state: {
         user,
+        isGuest: false,
       },
     });
   };
@@ -42,7 +43,11 @@ const HomePage = () => {
   };
 
   const handleTryEditor = () => {
-    navigate(`${INITIAL_PATH.createRoom}/${guestUserId}`);
+    navigate(INITIAL_PATH.createRoom, {
+      state: {
+        isGuest: true,
+      },
+    });
   };
 
   useEffect(() => {

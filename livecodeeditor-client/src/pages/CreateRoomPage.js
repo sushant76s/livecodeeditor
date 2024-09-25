@@ -29,7 +29,11 @@ const CreateRoomPage = () => {
 
   const [rooms, setRooms] = useState([]);
 
-  console.log("sdlkjf: ", location.state);
+  console.log("Location State in Create Room Page: ", location.state);
+
+  const guestUser = location.state?.isGuest;
+
+  const [username, setUserName] = useState("");
 
   useEffect(() => {
     const getRoomList = async () => {
@@ -45,7 +49,9 @@ const CreateRoomPage = () => {
       }
     };
 
-    getRoomList();
+    if (!guestUser) {
+      getRoomList();
+    }
   }, []);
 
   const createNewRoom = (e) => {
@@ -67,55 +73,94 @@ const CreateRoomPage = () => {
     setRoomId(room.id);
     setRoomName(room.name);
     // Join Room API
-    const joinedRoomResponse = await joinRoom({ roomId: room.id });
-    console.log("Joined Room: ", joinedRoomResponse);
-    if (joinedRoomResponse) {
-      navigate(`/room/${room.id}`, {
-        state: {
-          roomName: room.name,
-          user: location.state?.user,
-        },
-      });
+    if (!guestUser) {
+      const joinedRoomResponse = await joinRoom({ roomId: room.id });
+      console.log("Joined Room: ", joinedRoomResponse);
+      if (joinedRoomResponse) {
+        navigate(`/room/${room.id}`, {
+          state: {
+            roomName: room.name,
+            user: location.state?.user,
+            isGuest: false,
+          },
+        });
+      }
     }
   };
 
   const joinRoomUsingForm = async () => {
-    if (!roomId || !roomName) {
+    if (!roomId || (!guestUser && !username)) {
       toast.error("Room ID and roomName are required!");
       return;
     }
     // Create Room API
-    const createdRoomResponse = await createRoom({
-      roomId,
-      roomName,
-    });
-    console.log("Created Room Response: ", createdRoomResponse);
-    if (createdRoomResponse) {
+    if (!guestUser) {
+      if (!roomId || !roomName || (!guestUser && !username)) {
+        toast.error("Room ID and roomName are required!");
+        return;
+      }
+      const createdRoomResponse = await createRoom({
+        roomId,
+        roomName,
+      });
+      console.log("Created Room Response: ", createdRoomResponse);
+      if (createdRoomResponse) {
+        navigate(`/room/${roomId}`, {
+          state: {
+            roomName,
+            user: location.state?.user,
+            isGuest: false,
+          },
+        });
+      }
+    } else {
+      const testUser = {
+        id: uuidv4(),
+        fullName: username,
+        email: `${username}@gmail.com`,
+      };
       navigate(`/room/${roomId}`, {
         state: {
-          roomName,
-          user: location.state?.user,
+          roomName: "Guest",
+          user: testUser,
+          isGuest: true,
         },
       });
     }
   };
 
   const joinRoomUsingId = async () => {
-    if (!roomId) {
+    if (!roomId || (!guestUser && !username)) {
       toast.error("Room ID and roomName are required!");
       return;
     }
-    const data = {
-      roomId,
-    };
-    // Join Room API
-    const joinedRoomResponse = await joinRoom(data);
-    console.log("Joined Room: ", joinedRoomResponse);
-    if (joinedRoomResponse) {
+    if (!guestUser) {
+      const data = {
+        roomId,
+      };
+      // Join Room API
+      const joinedRoomResponse = await joinRoom(data);
+      console.log("Joined Room: ", joinedRoomResponse);
+      if (joinedRoomResponse) {
+        navigate(`/room/${roomId}`, {
+          state: {
+            roomName: joinedRoomResponse.room.roomName,
+            user: location.state?.user,
+            isGuest: false,
+          },
+        });
+      }
+    } else {
+      const testUser = {
+        id: uuidv4(),
+        fullName: username,
+        email: `${username}@gmail.com`,
+      };
       navigate(`/room/${roomId}`, {
         state: {
-          roomName: joinedRoomResponse.room.roomName,
-          user: location.state?.user,
+          roomName: "Guest",
+          user: testUser,
+          isGuest: true,
         },
       });
     }
@@ -211,15 +256,39 @@ const CreateRoomPage = () => {
               value={roomId}
               disabled
             />
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Room Name"
-              variant="outlined"
-              value={roomName}
-              onChange={(e) => setRoomName(e.target.value)}
-              onKeyUp={handleInputEnter}
-            />
+            {guestUser ? (
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Room Name"
+                variant="outlined"
+                value="Guest"
+                // onChange={(e) => setRoomName(e.target.value)}
+                // onKeyUp={handleInputEnter}
+                disabled
+              />
+            ) : (
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Room Name"
+                variant="outlined"
+                value={roomName}
+                onChange={(e) => setRoomName(e.target.value)}
+                // onKeyUp={handleInputEnter}
+              />
+            )}
+            {guestUser && (
+              <TextField
+                fullWidth
+                margin="normal"
+                label="User Name"
+                variant="outlined"
+                value={username}
+                onChange={(e) => setUserName(e.target.value)}
+                // onKeyUp={handleInputEnter}
+              />
+            )}
             <Button
               fullWidth
               variant="contained"
@@ -252,8 +321,19 @@ const CreateRoomPage = () => {
               variant="outlined"
               value={roomId}
               onChange={(e) => setRoomId(e.target.value)}
-              onKeyUp={handleInputEnter}
+              // onKeyUp={handleInputEnter}
             />
+            {guestUser && (
+              <TextField
+                fullWidth
+                margin="normal"
+                label="User Name"
+                variant="outlined"
+                value={username}
+                onChange={(e) => setUserName(e.target.value)}
+                // onKeyUp={handleInputEnter}
+              />
+            )}
             <Button
               fullWidth
               variant="contained"
