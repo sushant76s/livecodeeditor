@@ -7,7 +7,7 @@ function getAllConnectedClient(io, roomId) {
     (socketId) => {
       return {
         socketId,
-        username: userSocketMap[socketId],
+        user: userSocketMap[socketId],
       };
     }
   );
@@ -17,8 +17,8 @@ function socketHandler(io) {
   io.on("connection", (socket) => {
     console.log("socket connected", socket.id);
 
-    socket.on("join", ({ roomId, username }) => {
-      userSocketMap[socket.id] = username;
+    socket.on("join", ({ roomId, user }) => {
+      userSocketMap[socket.id] = user;
       socket.join(roomId);
       userRoomMap[socket.id] = roomId;
 
@@ -31,7 +31,7 @@ function socketHandler(io) {
       clients.forEach(({ socketId }) => {
         io.to(socketId).emit("joined", {
           clients,
-          username,
+          user,
           socketId: socket.id,
         });
       });
@@ -45,27 +45,47 @@ function socketHandler(io) {
       io.to(socketId).emit("code-change", { code });
     });
 
-    socket.on("message", ({ roomId, message, username }) => {
+    // Room message event handler
+    socket.on("message", ({ roomId, message, user }) => {
       if (!messages[roomId]) {
         messages[roomId] = [];
       }
-      messages[roomId].push({ message, username });
+      messages[roomId].push({ message, user });
 
       io.in(roomId).emit("message", {
         messages: messages[roomId].slice(-1),
       });
     });
 
+    // Personal message event handler
+    socket.on("personalMessage", ({ receiverId, message, user }) => {
+      const receiverSocketId = Object.keys(userSocketMap).find(
+        (key) => userSocketMap[key].id === receiverId
+      );
+
+      if (receiverSocketId) {
+        io.to(receiverSocketId).emit("personalMessage", {
+          message,
+          user,
+        });
+      }
+    });
+
     socket.on("disconnecting", () => {
-      const rooms = [...socket.rooms];
+      const rooms = [...socket.rooms].filter((roomId) => roomId !== socket.id);
+
       rooms.forEach((roomId) => {
         socket.in(roomId).emit("disconnected", {
           socketId: socket.id,
-          username: userSocketMap[socket.id],
+          user: userSocketMap[socket.id],
         });
       });
       delete userSocketMap[socket.id];
-      socket.leave();
+      delete userRoomMap[socket.id]; // Clean up room mapping
+    });
+
+    socket.on("disconnect", () => {
+      socket.leave(); // Ensure socket leaves the room after the disconnect event
     });
   });
 }

@@ -26,7 +26,12 @@ const {
   getRoom,
   roomInfo,
 } = require("../controllers/roomController");
-const { roomChat, personalChat } = require("../controllers/chatController");
+const {
+  roomChat,
+  personalChat,
+  getRoomChatHistory,
+  getPersonalChatHistory,
+} = require("../controllers/chatController");
 const { saveSnippet } = require("../controllers/snippetController");
 const { authMiddleware } = require("../middlewares/auth");
 
@@ -42,6 +47,16 @@ router.post("/create-room", authMiddleware, createRoom);
 router.post("/join-room", authMiddleware, joinRoom);
 router.get("/get-room", authMiddleware, getRoom);
 router.post("/get-room-info", authMiddleware, roomInfo);
+router.get(
+  "/get-room-chat-history/:roomId",
+  authMiddleware,
+  getRoomChatHistory
+);
+router.get(
+  "/get-personal-chat-history/:receiverId",
+  authMiddleware,
+  getPersonalChatHistory
+);
 
 // Chat routes
 router.post("/room-chat", authMiddleware, roomChat);

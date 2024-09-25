@@ -54,8 +54,6 @@ exports.createRoom = async (req, res) => {
 exports.joinRoom = async (req, res) => {
   const { roomId } = req.body;
   const { userId } = req.user;
-  console.log("rid: ", typeof roomId);
-  console.log("id: ", typeof userId);
   try {
     const room = await prisma.room.update({
       where: { roomId },
@@ -63,7 +61,6 @@ exports.joinRoom = async (req, res) => {
         users: { connect: { id: userId } },
       },
     });
-    console.log("room: ", room);
     res.status(200).json({ message: "Joined room", room });
   } catch (err) {
     console.log(err);
@@ -77,7 +74,6 @@ exports.getRoom = async (req, res) => {
     const roomList = await prisma.room.findMany({
       where: { roomAdminId: userId },
     });
-    console.log("room: ", roomList);
     res.status(200).json({ message: "Joined room", roomList });
   } catch (err) {
     res.status(400).json({ error: "Joining room failed", err });
@@ -97,7 +93,6 @@ exports.roomInfo = async (req, res) => {
         codeSnippets: true,
       },
     });
-    console.log("room: ", roomInfo);
     res.status(200).json({ message: "Joined room", roomInfo });
   } catch (err) {
     res.status(400).json({ error: "Joining room failed", err });
