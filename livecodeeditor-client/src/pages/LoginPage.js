@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../authentication/AuthContext";
 import {
   TextField,
   Button,
@@ -11,21 +12,21 @@ import {
   Paper,
 } from "@mui/material";
 import codeImage from "../assets/images/code-image.png";
-import { setToken, setUserId } from "../authentication/auth";
 import { userSignIn } from "../services/UserAPI";
 
-function setCookie(name, value, days) {
-  let expires = "";
-  if (days) {
-    const date = new Date();
-    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-    expires = "; expires=" + date.toUTCString();
-  }
-  document.cookie = name + "=" + (value || "") + expires + "; path=/";
-}
+// function setCookie(name, value, days) {
+//   let expires = "";
+//   if (days) {
+//     const date = new Date();
+//     date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+//     expires = "; expires=" + date.toUTCString();
+//   }
+//   document.cookie = name + "=" + (value || "") + expires + "; path=/";
+// }
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
 
@@ -45,13 +46,15 @@ const LoginPage = () => {
     };
 
     try {
+      console.log("login data: ", loginData);
       const response = await userSignIn(loginData);
+      console.log("login res: ", response);
 
       if (!response) {
         throw new Error("Network response was not ok");
       }
 
-      setToken(response.token);
+      login(response.token);
       toast.success("Logged in successfully!");
       navigate("/");
     } catch (error) {

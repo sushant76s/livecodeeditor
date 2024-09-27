@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../authentication/AuthContext";
 import {
   AppBar,
   Toolbar,
@@ -19,17 +20,15 @@ import codeImage from "../assets/images/code-image.png";
 import { userInfo } from "../services/UserAPI";
 import { INITIAL_PATH } from "../config-global";
 
-const guestUserId = process.env.REACT_APP_GUEST_USER_ID;
-
 const HomePage = () => {
   const navigate = useNavigate();
+  const { logout, isGuest, authToken } = useAuth();
   const [user, setUser] = useState(null);
 
   const handleCreateRoom = () => {
     navigate(INITIAL_PATH.createRoom, {
       state: {
         user,
-        isGuest: false,
       },
     });
   };
@@ -43,11 +42,7 @@ const HomePage = () => {
   };
 
   const handleTryEditor = () => {
-    navigate(INITIAL_PATH.createRoom, {
-      state: {
-        isGuest: true,
-      },
-    });
+    navigate(INITIAL_PATH.createRoom);
   };
 
   useEffect(() => {
@@ -58,11 +53,13 @@ const HomePage = () => {
         setUser(userDetails.user);
       }
     };
-    getUserDetails();
-  }, []);
+    if (authToken && !isGuest) {
+      getUserDetails();
+    }
+  }, [authToken, isGuest]);
 
   const handleLogout = () => {
-    localStorage.clear();
+    logout();
     navigate("/");
     setUser(null);
   };
@@ -72,9 +69,14 @@ const HomePage = () => {
       {/* AppBar / Navbar */}
       <AppBar
         position="sticky"
-        sx={{ backgroundColor: "#fff", color: "#000", mb: 4, width: "100%" }}
+        sx={{
+          backgroundColor: "#fff",
+          color: "#000",
+          mb: 2,
+          width: "100%",
+        }}
       >
-        <Toolbar>
+        <Toolbar variant="dense">
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             <CodeIcon sx={{ mr: 1 }} />
             LiveCodeEditor
@@ -178,7 +180,6 @@ const HomePage = () => {
                     </Button>
                   </CardContent>
                 </Card>
-
                 <Card>
                   <CardContent>
                     <Typography variant="body1" color="text.secondary">
@@ -204,9 +205,12 @@ const HomePage = () => {
       {/* Footer */}
       <footer
         style={{
-          padding: "20px 0",
+          padding: "10px 0",
           backgroundColor: "#fff",
-          marginTop: "40px",
+          marginTop: "50px",
+          bottom: "0px",
+          position: "static",
+          width: "100%",
         }}
       >
         <Typography variant="body2" color="text.secondary" align="center">

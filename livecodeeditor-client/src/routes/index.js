@@ -7,10 +7,15 @@ import {
   LoginPage,
   SignupPage,
 } from "./elements";
-import { isAuthenticated } from "../authentication/auth";
+import { useAuth } from "../authentication/AuthContext";
 
 const ProtectedRoute = ({ children }) => {
-  return isAuthenticated() ? children : <Navigate to={INITIAL_PATH.login} />;
+  const { isGuest, authToken } = useAuth();
+  return authToken && !isGuest ? (
+    children
+  ) : (
+    <Navigate to={INITIAL_PATH.login} />
+  );
 };
 
 export default function Router() {

@@ -46,13 +46,13 @@ const SignUpPage = () => {
         throw new Error("Network response was not ok");
       }
       toast.success("User registered successfully!");
-      navigate("/");
+      console.log("Data after signup: ", response);
+      navigate("/login");
     } catch (error) {
       toast.error("There was an error with the registration.");
+      navigate("/signup");
       console.error("There was an error!", error);
     }
-
-    navigate("/login");
   };
 
   const handleInputEnter = (e) => {

@@ -5,6 +5,8 @@ import {
   Typography,
   List,
   ListItem,
+  ListItemAvatar,
+  Avatar,
   ListItemButton,
   ListItemText,
 } from "@mui/material";
@@ -14,6 +16,15 @@ const ListComponent = ({ clients }) => {
 
   const selectPerson = (person) => {
     setSelectedPerson(person);
+  };
+
+  const getRandomColor = () => {
+    const letters = "0123456789ABCDEF";
+    let color = "#";
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
   };
 
   console.log("clients in list: ", clients);
@@ -50,8 +61,23 @@ const ListComponent = ({ clients }) => {
         <List>
           {clients &&
             clients.map((person, index) => (
-              <ListItem key={index} sx={{ pt: 1, pb: 1, p: 0 }}>
+              <ListItem
+                key={index}
+                sx={{
+                  pt: 1,
+                  pb: 1,
+                  p: 0,
+                  backgroundColor: "#f0f0f0",
+                  borderRadius: "10px",
+                  mt: 0.5,
+                }}
+              >
                 <ListItemButton onClick={() => selectPerson(person.user.id)}>
+                  <ListItemAvatar>
+                    <Avatar sx={{ bgcolor: getRandomColor() }}>
+                      {person.user.fullName.charAt(0)}
+                    </Avatar>
+                  </ListItemAvatar>
                   <ListItemText primary={person.user.fullName} />
                 </ListItemButton>
               </ListItem>

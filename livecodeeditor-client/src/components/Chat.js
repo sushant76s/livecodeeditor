@@ -10,6 +10,8 @@ import {
   List,
   ListItem,
   ListItemButton,
+  ListItemAvatar,
+  Avatar,
   ListItemText,
   IconButton,
   CircularProgress,
@@ -204,7 +206,7 @@ const ChatComponent = ({
       </Paper>
 
       {/* Chat Interface */}
-      <Box sx={{ mt: "8px", flexGrow: 1, height: "calc(100% - 77px)" }}>
+      <Box sx={{ mt: "8px", flexGrow: 1, height: "calc(90vh - 80px)" }}>
         {loading ? (
           <Box
             sx={{
@@ -308,7 +310,17 @@ const ChatComponent = ({
                 <List>
                   {clients &&
                     clients.map((person, index) => (
-                      <ListItem key={index}>
+                      <ListItem
+                        sx={{
+                          pt: 1,
+                          pb: 1,
+                          p: 0,
+                          backgroundColor: "#f0f0f0",
+                          borderRadius: "10px",
+                          mt: 0.5,
+                        }}
+                        key={index}
+                      >
                         <ListItemButton
                           onClick={() =>
                             selectPerson({
@@ -318,6 +330,9 @@ const ChatComponent = ({
                           }
                           disabled={person.user.id === userId}
                         >
+                          <ListItemAvatar>
+                            <Avatar>{person.user.fullName.charAt(0)} </Avatar>
+                          </ListItemAvatar>
                           <ListItemText
                             primary={
                               person.user.id === userId

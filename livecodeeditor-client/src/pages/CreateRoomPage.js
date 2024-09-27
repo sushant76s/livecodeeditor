@@ -19,9 +19,11 @@ import {
 } from "@mui/material";
 import codeImage from "../assets/images/code-image.png";
 import { createRoom, getRoom, joinRoom } from "../services/RoomAPI";
+import { useAuth } from "../authentication/AuthContext";
 
 const CreateRoomPage = () => {
   const navigate = useNavigate();
+  const { isGuest } = useAuth();
   const location = useLocation();
   const [roomId, setRoomId] = useState("");
   const [roomName, setRoomName] = useState("");
@@ -30,8 +32,6 @@ const CreateRoomPage = () => {
   const [rooms, setRooms] = useState([]);
 
   console.log("Location State in Create Room Page: ", location.state);
-
-  const guestUser = location.state?.isGuest;
 
   const [username, setUserName] = useState("");
 
@@ -49,10 +49,10 @@ const CreateRoomPage = () => {
       }
     };
 
-    if (!guestUser) {
+    if (!isGuest) {
       getRoomList();
     }
-  }, []);
+  }, [isGuest]);
 
   const createNewRoom = (e) => {
     e.preventDefault();
@@ -73,15 +73,15 @@ const CreateRoomPage = () => {
     setRoomId(room.id);
     setRoomName(room.name);
     // Join Room API
-    if (!guestUser) {
+    if (!isGuest) {
       const joinedRoomResponse = await joinRoom({ roomId: room.id });
       console.log("Joined Room: ", joinedRoomResponse);
       if (joinedRoomResponse) {
         navigate(`/room/${room.id}`, {
           state: {
             roomName: room.name,
+            roomId,
             user: location.state?.user,
-            isGuest: false,
           },
         });
       }
@@ -89,13 +89,13 @@ const CreateRoomPage = () => {
   };
 
   const joinRoomUsingForm = async () => {
-    if (!roomId || (!guestUser && !username)) {
+    if (!roomId || (!isGuest && !username)) {
       toast.error("Room ID and roomName are required!");
       return;
     }
     // Create Room API
-    if (!guestUser) {
-      if (!roomId || !roomName || (!guestUser && !username)) {
+    if (!isGuest) {
+      if (!roomId || !roomName || (!isGuest && !username)) {
         toast.error("Room ID and roomName are required!");
         return;
       }
@@ -108,8 +108,8 @@ const CreateRoomPage = () => {
         navigate(`/room/${roomId}`, {
           state: {
             roomName,
+            roomId,
             user: location.state?.user,
-            isGuest: false,
           },
         });
       }
@@ -122,19 +122,19 @@ const CreateRoomPage = () => {
       navigate(`/room/${roomId}`, {
         state: {
           roomName: "Guest",
+          roomId,
           user: testUser,
-          isGuest: true,
         },
       });
     }
   };
 
   const joinRoomUsingId = async () => {
-    if (!roomId || (!guestUser && !username)) {
+    if (!roomId || (!isGuest && !username)) {
       toast.error("Room ID and roomName are required!");
       return;
     }
-    if (!guestUser) {
+    if (!isGuest) {
       const data = {
         roomId,
       };
@@ -145,8 +145,8 @@ const CreateRoomPage = () => {
         navigate(`/room/${roomId}`, {
           state: {
             roomName: joinedRoomResponse.room.roomName,
+            roomId,
             user: location.state?.user,
-            isGuest: false,
           },
         });
       }
@@ -159,8 +159,8 @@ const CreateRoomPage = () => {
       navigate(`/room/${roomId}`, {
         state: {
           roomName: "Guest",
+          roomId,
           user: testUser,
-          isGuest: true,
         },
       });
     }
@@ -256,7 +256,7 @@ const CreateRoomPage = () => {
               value={roomId}
               disabled
             />
-            {guestUser ? (
+            {isGuest ? (
               <TextField
                 fullWidth
                 margin="normal"
@@ -278,7 +278,7 @@ const CreateRoomPage = () => {
                 // onKeyUp={handleInputEnter}
               />
             )}
-            {guestUser && (
+            {isGuest && (
               <TextField
                 fullWidth
                 margin="normal"
@@ -323,7 +323,7 @@ const CreateRoomPage = () => {
               onChange={(e) => setRoomId(e.target.value)}
               // onKeyUp={handleInputEnter}
             />
-            {guestUser && (
+            {isGuest && (
               <TextField
                 fullWidth
                 margin="normal"

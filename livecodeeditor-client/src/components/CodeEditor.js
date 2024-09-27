@@ -106,7 +106,8 @@ function CodeEditor({ editorTheme, fontSize, socketRef, roomId, codeRef }) {
 
   const options = {
     value,
-    height: "500px",
+    // height: "500px",
+    height: "calc(90vh - 80px)",
     theme: editorTheme === "dark" ? githubDark : githubLight,
     onChange,
     style: {

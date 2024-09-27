@@ -3,6 +3,7 @@ import Interceptor from "./interceptor";
 export const userSignIn = async (data) => {
   try {
     const response = await Interceptor.post("/api/signin", data);
+    console.log("user sign in service response: ", response);
     return response.data;
   } catch (error) {
     console.error(error);

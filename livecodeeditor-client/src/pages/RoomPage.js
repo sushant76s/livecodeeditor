@@ -27,6 +27,7 @@ import CodeEditor from "../components/CodeEditor";
 import ChatComponent from "../components/Chat";
 import ListComponent from "../components/List";
 import { roomInfo } from "../services/RoomAPI";
+import { useAuth } from "../authentication/AuthContext";
 
 // Create a container using Grid layout
 const GridContainer = styled(Grid)(({ theme, isHidden }) => ({
@@ -48,7 +49,8 @@ const AppBarFixed = styled(AppBar)(({ theme }) => ({
     minHeight: "48px",
     alignItems: "center",
   },
-  background: "#cfcfcf",
+  // background: "#cfcfcf",
+  backgroundColor: "#f0f0f0",
 }));
 
 const SectionA = styled(Box)(({ theme }) => ({
@@ -70,8 +72,9 @@ export default function RoomPage() {
   const socketRef = useRef(null);
   const codeRef = useRef(null);
   const location = useLocation();
-  const { roomId } = useParams();
+  const { room_id } = useParams();
   const navigate = useNavigate();
+  const { isGuest } = useAuth();
 
   const [isBHidden, setIsBHidden] = useState(false);
   const [isUserList, setIsUserList] = useState(false);
@@ -82,18 +85,28 @@ export default function RoomPage() {
   const [clients, setClients] = useState([]);
   const [roomIntId, setRoomIntId] = useState(null);
 
+  const roomId = location.state?.roomId;
+  const checkUser = location.state?.user;
+
+  useEffect(() => {
+    if (roomId !== room_id && checkUser !== null) {
+      navigate("/room");
+      toast.error("Invalid room id or missing user");
+    }
+  }, [roomId, room_id, checkUser]);
+
   console.log("state in room page: ", location.state);
-  const guestUser = location.state?.isGuest;
+  console.log("room id: ", roomId);
 
   useEffect(() => {
     const infoFunction = async () => {
       const res = await roomInfo({ roomId });
       console.log("Room Info: ", res);
       if (res) {
-        setRoomIntId(res.roomInfo.id);
+        setRoomIntId(res?.roomInfo?.id);
       }
     };
-    if (!guestUser) {
+    if (!isGuest) {
       infoFunction();
     }
   }, []);
@@ -301,8 +314,22 @@ export default function RoomPage() {
       </GridContainer>
 
       {/* Bottom AppBar */}
-      <AppBarFixed position="fixed">
-        <Toolbar sx={{ display: "flex", justifyContent: "center" }}>
+      <AppBarFixed
+        position="fixed"
+        sx={{
+          borderRadius: "20px",
+          justifyContent: "center",
+          margin: "0 auto 10px auto",
+          left: 0,
+          right: 0,
+          width: "75%",
+          alignItems: "center",
+        }}
+      >
+        <Toolbar
+          sx={{ display: "flex", justifyContent: "center" }}
+          variant="dense"
+        >
           <Button
             variant="outlined"
             color="primary"
