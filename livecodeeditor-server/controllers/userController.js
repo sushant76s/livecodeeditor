@@ -68,6 +68,7 @@ exports.signUp = async (req, res) => {
     });
     res.status(201).json({ message: "User created", newUser });
   } catch (err) {
+    console.log(err);
     res.status(400).json({ error: "User creation failed", err });
   }
 };
@@ -87,6 +88,7 @@ exports.signIn = async (req, res) => {
       .status(200)
       .json({ message: "Login successful", token, userId: user.id });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: "Login failed", err });
   }
 };
