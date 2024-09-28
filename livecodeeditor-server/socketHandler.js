@@ -17,6 +17,12 @@ function socketHandler(io) {
   io.on("connection", (socket) => {
     console.log("socket connected", socket.id);
 
+    // Handle room existence check
+    socket.on("check-room", ({ roomId }) => {
+      const roomExists = io.sockets.adapter.rooms.has(roomId);
+      socket.emit("room-check-response", { exists: roomExists });
+    });
+
     socket.on("join", ({ roomId, user }) => {
       userSocketMap[socket.id] = user;
       socket.join(roomId);
