@@ -43,10 +43,10 @@ const HomePage = () => {
         setUser(userDetails.user);
       }
     };
-    if (authToken && !isGuest) {
+    if (!isGuest) {
       getUserDetails();
     }
-  }, [authToken, isGuest]);
+  }, [isGuest]);
 
   const handleLogout = () => {
     logout();

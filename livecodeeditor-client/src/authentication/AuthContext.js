@@ -17,10 +17,10 @@ export const AuthProvider = ({ children }) => {
 
   const createGuestSession = () => {
     // Generate a temp token call api or implement the temp token generation logic here
-    const guestToken = "temp-token";
-    setAuthToken(guestToken);
+    // const guestToken = "temp-token";
+    // setAuthToken(guestToken);
     setIsGuest(true);
-    localStorage.setItem("token", guestToken);
+    // localStorage.setItem("token", guestToken);
   };
 
   const login = (token) => {
