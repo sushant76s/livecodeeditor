@@ -107,7 +107,7 @@ const CreateRoomPage = () => {
         navigate(`/room/${room.id}`, {
           state: {
             roomName: room.name,
-            roomId,
+            roomId: room.id,
             user: location.state?.user,
           },
         });
