@@ -20,11 +20,22 @@ const AuthPage = () => {
     }
   }, [type, navigate]);
 
+  // Function to validate email
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   // SignIn function
   const handleSignIn = async ({ email, password }) => {
+    if (!validateEmail(email)) {
+      toast.error("Please use a valid email address!");
+      return;
+    }
+
     try {
       const response = await userSignIn({ email, password });
-      if (!response) throw new Error("Network response was not ok");
+      if (!response) throw new Error("Something went wrong!");
 
       login(response.token);
       toast.success("Logged in successfully!");
@@ -37,6 +48,10 @@ const AuthPage = () => {
 
   // SignUp function
   const handleSignUp = async ({ fullName, email, password, passwordAgain }) => {
+    if (!validateEmail(email)) {
+      toast.error("Please use a valid email address!");
+      return;
+    }
     if (password !== passwordAgain) {
       toast.error("Passwords do not match!");
       return;
@@ -44,7 +59,7 @@ const AuthPage = () => {
 
     try {
       const response = await userSignUp({ fullName, email, password });
-      if (!response) throw new Error("Network response was not ok");
+      if (!response) throw new Error("Something went wrong!");
 
       toast.success("User registered successfully!");
       navigate("/login");
