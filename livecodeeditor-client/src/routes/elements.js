@@ -28,5 +28,4 @@ export const CreateRoomPage = Loadable(
   lazy(() => import("../pages/CreateRoomPage"))
 );
 export const RoomPage = Loadable(lazy(() => import("../pages/RoomPage")));
-export const LoginPage = Loadable(lazy(() => import("../pages/LoginPage")));
-export const SignupPage = Loadable(lazy(() => import("../pages/SignUpPage")));
+export const AuthPage = Loadable(lazy(() => import("../pages/AuthPage")));

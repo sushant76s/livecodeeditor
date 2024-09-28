@@ -1,12 +1,6 @@
 import { Navigate, useRoutes } from "react-router-dom";
 import { INITIAL_PATH } from "../config-global";
-import {
-  HomePage,
-  CreateRoomPage,
-  RoomPage,
-  LoginPage,
-  SignupPage,
-} from "./elements";
+import { HomePage, CreateRoomPage, RoomPage, AuthPage } from "./elements";
 import { useAuth } from "../authentication/AuthContext";
 
 const ProtectedRoute = ({ children }) => {
@@ -30,12 +24,8 @@ export default function Router() {
       //   ],
     },
     {
-      path: INITIAL_PATH.login,
-      element: <LoginPage />,
-    },
-    {
-      path: INITIAL_PATH.singup,
-      element: <SignupPage />,
+      path: INITIAL_PATH.auth,
+      element: <AuthPage />,
     },
     {
       path: INITIAL_PATH.createRoom,

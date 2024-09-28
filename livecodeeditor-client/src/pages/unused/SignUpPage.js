@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../authentication/AuthContext";
 import {
   TextField,
   Button,
@@ -12,53 +11,46 @@ import {
   Paper,
 } from "@mui/material";
 import codeImage from "../assets/images/code-image.png";
-import { userSignIn } from "../services/UserAPI";
+import { userSignUp } from "../../services/UserAPI";
 
-// function setCookie(name, value, days) {
-//   let expires = "";
-//   if (days) {
-//     const date = new Date();
-//     date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-//     expires = "; expires=" + date.toUTCString();
-//   }
-//   document.cookie = name + "=" + (value || "") + expires + "; path=/";
-// }
-
-const LoginPage = () => {
+const SignUpPage = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const [user, setUser] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
+  const [userPasswordAgain, setUserPasswordAgain] = useState("");
 
-  const redirectToSignUp = () => {
-    navigate("/signup");
+  const redirectToLogin = () => {
+    navigate("/login");
   };
 
   const validateUser = async () => {
-    if (!userEmail || !userPassword) {
-      toast.error("Email and password are required!");
+    if (!userEmail || !userPassword || !user || !userPasswordAgain) {
+      toast.error("All the fields are required!");
+      return;
+    }
+    if (userPassword !== userPasswordAgain) {
+      toast.error("Password did not match!");
       return;
     }
 
-    const loginData = {
+    const userData = {
+      fullName: user,
       email: userEmail,
       password: userPassword,
     };
 
     try {
-      console.log("login data: ", loginData);
-      const response = await userSignIn(loginData);
-      console.log("login res: ", response);
-
+      const response = await userSignUp(userData);
       if (!response) {
         throw new Error("Network response was not ok");
       }
-
-      login(response.token);
-      toast.success("Logged in successfully!");
-      navigate("/");
+      toast.success("User registered successfully!");
+      console.log("Data after signup: ", response);
+      navigate("/login");
     } catch (error) {
-      toast.error(error.message || "There was an error with the login.");
+      toast.error("There was an error with the registration.");
+      navigate("/signup");
       console.error("There was an error!", error);
     }
   };
@@ -92,9 +84,23 @@ const LoginPage = () => {
           variant="h5"
           sx={{ marginTop: 2, marginBottom: 2 }}
         >
-          Login to LiveCodeEditor
+          Sign Up to LiveCodeEditor
         </Typography>
         <Box component="form" sx={{ mt: 1 }}>
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            id="fullName"
+            label="Full Name"
+            name="fullName"
+            autoComplete="name"
+            autoFocus
+            value={user}
+            onChange={(e) => setUser(e.target.value)}
+            onKeyUp={handleInputEnter}
+          />
           <TextField
             variant="outlined"
             margin="normal"
@@ -104,7 +110,6 @@ const LoginPage = () => {
             label="Email Address"
             name="email"
             autoComplete="email"
-            autoFocus
             value={userEmail}
             onChange={(e) => setUserEmail(e.target.value)}
             onKeyUp={handleInputEnter}
@@ -123,6 +128,19 @@ const LoginPage = () => {
             onChange={(e) => setUserPassword(e.target.value)}
             onKeyUp={handleInputEnter}
           />
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            name="passwordAgain"
+            label="Re-enter Password"
+            type="password"
+            id="passwordAgain"
+            value={userPasswordAgain}
+            onChange={(e) => setUserPasswordAgain(e.target.value)}
+            onKeyUp={handleInputEnter}
+          />
           <Button
             type="button"
             fullWidth
@@ -131,17 +149,17 @@ const LoginPage = () => {
             sx={{ mt: 3, mb: 2 }}
             onClick={validateUser}
           >
-            Login
+            Sign Up
           </Button>
           <Box mt={2} textAlign="center">
             <Typography variant="body2">
-              If you are a new user create &nbsp;
+              If you are already a user, please &nbsp;
               <Link
                 component="button"
                 variant="body2"
-                onClick={redirectToSignUp}
+                onClick={redirectToLogin}
               >
-                account
+                login
               </Link>
             </Typography>
           </Box>
@@ -151,4 +169,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default SignUpPage;

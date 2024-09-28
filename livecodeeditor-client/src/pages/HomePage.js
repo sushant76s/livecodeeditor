@@ -1,24 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../authentication/AuthContext";
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Button,
-  Card,
-  CardContent,
-  CardMedia,
-  Link,
-  Container,
-} from "@mui/material";
+import { Container } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import GitHubIcon from "@mui/icons-material/GitHub";
-import LogoutIcon from "@mui/icons-material/Logout";
-import CodeIcon from "@mui/icons-material/Code";
 import codeImage from "../assets/images/code-image.png";
 import { userInfo } from "../services/UserAPI";
 import { INITIAL_PATH } from "../config-global";
+import MainHeader from "../components/header/MainHeader";
+import Footer from "../components/footer/Footer";
+import CustomCard from "../components/custom-card/CustomCard";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -34,11 +24,11 @@ const HomePage = () => {
   };
 
   const redirectToLogin = () => {
-    navigate("/login");
+    navigate("/auth?type=signin");
   };
 
   const redirectToSignUp = () => {
-    navigate("/signup");
+    navigate("/auth?type=signup");
   };
 
   const handleTryEditor = () => {
@@ -67,135 +57,43 @@ const HomePage = () => {
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#f3f4f6" }}>
       {/* AppBar / Navbar */}
-      <AppBar
-        position="sticky"
-        sx={{
-          backgroundColor: "#fff",
-          color: "#000",
-          mb: 2,
-          width: "100%",
-        }}
-      >
-        <Toolbar variant="dense">
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            <CodeIcon sx={{ mr: 1 }} />
-            LiveCodeEditor
-          </Typography>
-          {user && (
-            <Typography variant="h6" component="div" sx={{ mr: 2 }}>
-              Hi, {user.fullName}
-            </Typography>
-          )}
-          {user && (
-            <Button
-              startIcon={<LogoutIcon />}
-              color="inherit"
-              onClick={handleLogout}
-              sx={{ mr: 2 }}
-            >
-              Logout
-            </Button>
-          )}
-          <Button
-            startIcon={<GitHubIcon />}
-            color="inherit"
-            href="https://github.com/sushant76s/livecodeeditor/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            GitHub
-          </Button>
-        </Toolbar>
-      </AppBar>
+      <MainHeader user={user} handleLogout={handleLogout} />
 
       {/* Main Content */}
       <Container maxWidth="xl" sx={{ px: 0 }}>
         <Grid container spacing={2}>
           {/* Card 1 */}
           <Grid size={{ xs: 12, md: 8 }}>
-            <Card>
-              <CardMedia
-                component="img"
-                height="400"
-                image={codeImage}
-                alt="LiveCodeEditor"
-              />
-              <CardContent>
-                <Typography variant="h5" component="div" gutterBottom>
-                  LiveCodeEditor
-                </Typography>
-                <Typography variant="body1" color="text.secondary">
-                  LiveCodeEditor is a collaborative real-time code editing tool
+            <CustomCard
+              image={codeImage}
+              altText="LiveCodeEditor"
+              title="LiveCodeEditor"
+              description="LiveCodeEditor is a collaborative real-time code editing tool
                   with integrated chat support, allowing multiple users to
-                  connect and view code snippets simultaneously.
-                </Typography>
-              </CardContent>
-            </Card>
+                  connect and view code snippets simultaneously."
+            />
           </Grid>
 
           {/* Cards 2, 3, and 4 */}
           <Grid size={{ xs: 12, md: 4 }}>
-            <Card sx={{ mb: 2 }}>
-              <CardContent>
-                <Typography variant="body1" color="text.secondary">
-                  Experience real-time collaborative coding with LiveCodeEditor!
-                </Typography>
-                {user ? (
-                  <Button
-                    variant="contained"
-                    fullWidth
-                    sx={{ mt: 2 }}
-                    onClick={handleCreateRoom}
-                  >
-                    LiveCodeEditor
-                  </Button>
-                ) : (
-                  <Button
-                    variant="contained"
-                    fullWidth
-                    sx={{ mt: 2 }}
-                    onClick={handleTryEditor}
-                  >
-                    Try as Guest
-                  </Button>
-                )}
-              </CardContent>
-            </Card>
+            <CustomCard
+              description="Experience real-time collaborative coding with LiveCodeEditor!"
+              buttonText={user ? "LiveCodeEditor" : "Try as Guest"}
+              onButtonClick={user ? handleCreateRoom : handleTryEditor}
+            />
 
             {!user && (
               <>
-                <Card sx={{ mb: 2 }}>
-                  <CardContent>
-                    <Typography variant="body1" color="text.secondary">
-                      Access your LiveCodeEditor account to join collaborative
-                      coding sessions and chat with peers in real-time.
-                    </Typography>
-                    <Button
-                      variant="contained"
-                      fullWidth
-                      sx={{ mt: 2 }}
-                      onClick={redirectToLogin}
-                    >
-                      Login
-                    </Button>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent>
-                    <Typography variant="body1" color="text.secondary">
-                      Create your LiveCodeEditor account to start collaborating
-                      on code snippets and chatting with your team instantly.
-                    </Typography>
-                    <Button
-                      variant="contained"
-                      fullWidth
-                      sx={{ mt: 2 }}
-                      onClick={redirectToSignUp}
-                    >
-                      Signup
-                    </Button>
-                  </CardContent>
-                </Card>
+                <CustomCard
+                  description="Access your LiveCodeEditor account to join collaborative coding sessions and chat with peers in real-time."
+                  buttonText="Login"
+                  onButtonClick={redirectToLogin}
+                />
+                <CustomCard
+                  description="Create your LiveCodeEditor account to start collaborating on code snippets and chatting with your team instantly."
+                  buttonText="Signup"
+                  onButtonClick={redirectToSignUp}
+                />
               </>
             )}
           </Grid>
@@ -203,28 +101,7 @@ const HomePage = () => {
       </Container>
 
       {/* Footer */}
-      <footer
-        style={{
-          padding: "10px 0",
-          backgroundColor: "#fff",
-          marginTop: "50px",
-          bottom: "0px",
-          position: "static",
-          width: "100%",
-        }}
-      >
-        <Typography variant="body2" color="text.secondary" align="center">
-          Developed by{" "}
-          <Link
-            href="https://github.com/sushant76s/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Sushant
-          </Link>{" "}
-          &copy;2024
-        </Typography>
-      </footer>
+      <Footer />
     </div>
   );
 };
