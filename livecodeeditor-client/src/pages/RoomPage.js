@@ -228,9 +228,9 @@ export default function RoomPage() {
         <SectionA>
           <Paper sx={{ padding: 1, mb: 1 }}>
             <Stack direction="row" justifyContent="space-between">
-              <Typography variant="h6">Code Editor</Typography>
+              <Typography variant="h6">LiveCodeEditor: Code Editor</Typography>
               <Typography variant="h6">
-                Room: {location.state?.roomName}
+                Room Name: {location.state?.roomName}
               </Typography>
 
               <Stack direction="row-reverse" spacing={2}>

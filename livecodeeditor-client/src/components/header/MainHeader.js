@@ -4,6 +4,7 @@ import { AppBar, Toolbar, Typography, Button } from "@mui/material";
 import CodeIcon from "@mui/icons-material/Code";
 import LogoutIcon from "@mui/icons-material/Logout";
 import GitHubIcon from "@mui/icons-material/GitHub";
+import PersonIcon from "@mui/icons-material/Person";
 
 const MainHeader = ({ user, handleLogout }) => {
   const navigate = useNavigate();
@@ -30,9 +31,17 @@ const MainHeader = ({ user, handleLogout }) => {
           LiveCodeEditor
         </Typography>
         {user && (
-          <Typography variant="h6" component="div" sx={{ mr: 2 }}>
-            Hi, {user.fullName}
-          </Typography>
+          <>
+            <PersonIcon />
+            <Typography
+              variant="body1"
+              color="inherit"
+              // component="div"
+              sx={{ mr: 2, ml: 1 }}
+            >
+              {user.fullName}
+            </Typography>
+          </>
         )}
         {user && (
           <Button

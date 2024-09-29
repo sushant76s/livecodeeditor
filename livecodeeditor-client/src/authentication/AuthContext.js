@@ -11,17 +11,18 @@ export const AuthProvider = ({ children }) => {
     if (token) {
       setAuthToken(token);
     } else {
-      createGuestSession();
+      // createGuestSession();
+      setIsGuest(true);
     }
   }, []);
 
-  const createGuestSession = () => {
-    // Generate a temp token call api or implement the temp token generation logic here
-    // const guestToken = "temp-token";
-    // setAuthToken(guestToken);
-    setIsGuest(true);
-    // localStorage.setItem("token", guestToken);
-  };
+  // const createGuestSession = () => {
+  //   // Generate a temp token call api or implement the temp token generation logic here
+  //   // const guestToken = "temp-token";
+  //   // setAuthToken(guestToken);
+  //   setIsGuest(true);
+  //   // localStorage.setItem("token", guestToken);
+  // };
 
   const login = (token) => {
     setAuthToken(token);

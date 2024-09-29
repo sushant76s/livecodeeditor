@@ -78,7 +78,7 @@ const HomePage = () => {
           <Grid size={{ xs: 12, md: 4 }}>
             <CustomCard
               description="Experience real-time collaborative coding with LiveCodeEditor!"
-              buttonText={user ? "LiveCodeEditor" : "Try as Guest"}
+              buttonText={user ? "Join Room/Create Room" : "Try as Guest"}
               onButtonClick={user ? handleCreateRoom : handleTryEditor}
             />
 

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Paper,
@@ -23,6 +24,7 @@ import {
   roomChat,
   roomChatHistory,
 } from "../services/ChatAPI";
+import { useAuth } from "../authentication/AuthContext";
 const ChatComponent = ({
   roomId,
   roomIntId,
@@ -31,6 +33,8 @@ const ChatComponent = ({
   socketRef,
   user,
 }) => {
+  const { isGuest } = useAuth();
+  const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState(0);
   const [messages, setMessages] = useState([]);
   const [personalMessages, setPersonalMessages] = useState([]);
@@ -173,6 +177,10 @@ const ChatComponent = ({
     setMessages([]);
   };
 
+  const redirectToLogIn = () => {
+    navigate("/auth");
+  };
+
   console.log("messages: ", messages);
   console.log("pmessages: ", personalMessages);
 
@@ -235,9 +243,17 @@ const ChatComponent = ({
             {/* Scrollable messages area */}
             <Box sx={{ flexGrow: 1, overflowY: "auto", mb: 2 }}>
               {messages.length === 0 ? (
-                <Typography variant="body2" color="textSecondary">
-                  No messages yet.
-                </Typography>
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  justifyContent="center"
+                  alignItems="center"
+                  height="100%"
+                >
+                  <Typography variant="body2" color="textSecondary">
+                    No messages yet.
+                  </Typography>
+                </Box>
               ) : (
                 messages.map((msg, index) => {
                   const isSender = msg.user.id === userId;
@@ -301,135 +317,168 @@ const ChatComponent = ({
         ) : (
           // Personal Chat Interface
           <>
-            {!selectedPerson ? (
-              // List of connected people when no person is selected
-              <Paper sx={{ height: "100%", padding: 2 }}>
-                <Typography variant="h6" gutterBottom>
-                  Connected People
-                </Typography>
-                <List>
-                  {clients &&
-                    clients.map((person, index) => (
-                      <ListItem
-                        sx={{
-                          pt: 1,
-                          pb: 1,
-                          p: 0,
-                          backgroundColor: "#f0f0f0",
-                          borderRadius: "10px",
-                          mt: 0.5,
-                        }}
-                        key={index}
-                      >
-                        <ListItemButton
-                          onClick={() =>
-                            selectPerson({
-                              id: person.user.id,
-                              name: person.user.fullName,
-                            })
-                          }
-                          disabled={person.user.id === userId}
-                        >
-                          <ListItemAvatar>
-                            <Avatar>{person.user.fullName.charAt(0)} </Avatar>
-                          </ListItemAvatar>
-                          <ListItemText
-                            primary={
-                              person.user.id === userId
-                                ? person.user.fullName + " (You)"
-                                : person.user.fullName
-                            }
-                          />
-                        </ListItemButton>
-                      </ListItem>
-                    ))}
-                </List>
-              </Paper>
-            ) : (
-              // Personal chat with the selected person
-              <Paper
-                sx={{
-                  height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  padding: "16px 8px",
-                }}
-              >
-                {/* Back Button */}
-                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                  <IconButton onClick={goBackToList}>
-                    <ArrowBackIcon />
-                  </IconButton>
-                  <Typography variant="h6" sx={{ ml: 1 }}>
-                    Chat with {selectedPerson.name}
-                  </Typography>
-                </Box>
-
-                {/* Scrollable messages area */}
-                <Box sx={{ flexGrow: 1, overflowY: "auto", mb: 2 }}>
-                  {selectedUserMessages.length === 0 ? (
-                    <Typography variant="body2" color="textSecondary">
-                      No messages yet.
+            {!isGuest ? (
+              <>
+                {!selectedPerson ? (
+                  // List of connected people when no person is selected
+                  <Paper sx={{ height: "100%", padding: 2 }}>
+                    <Typography variant="h6" gutterBottom>
+                      Connected People
                     </Typography>
-                  ) : (
-                    selectedUserMessages.map((msg, index) => {
-                      const isSender = msg.user.id === userId;
-                      return (
-                        <Box
-                          key={index}
-                          sx={{
-                            mb: 1,
-                            display: "flex",
-                            justifyContent: isSender
-                              ? "flex-end"
-                              : "flex-start",
-                          }}
-                        >
-                          <Box
+                    <List>
+                      {clients &&
+                        clients.map((person, index) => (
+                          <ListItem
                             sx={{
-                              maxWidth: "70%",
-                              p: 1.5,
-                              borderRadius: "12px",
-                              bgcolor: isSender ? "primary.light" : "grey.200",
+                              pt: 1,
+                              pb: 1,
+                              p: 0,
+                              backgroundColor: "#f0f0f0",
+                              borderRadius: "10px",
+                              mt: 0.5,
                             }}
+                            key={index}
                           >
-                            <Typography
-                              variant="subtitle2"
-                              sx={{ fontWeight: "bold" }}
+                            <ListItemButton
+                              onClick={() =>
+                                selectPerson({
+                                  id: person.user.id,
+                                  name: person.user.fullName,
+                                })
+                              }
+                              disabled={person.user.id === userId}
                             >
-                              {isSender ? "You" : msg.user.fullName}{" "}
-                            </Typography>
-                            <Typography variant="body1">
-                              {msg.message}
-                            </Typography>
-                          </Box>
-                        </Box>
-                      );
-                    })
-                  )}
-                </Box>
-
-                {/* Fixed input area */}
-                <Box sx={{ display: "flex" }}>
-                  <TextField
-                    fullWidth
-                    value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    placeholder="Type a message"
-                    size="small"
-                    onKeyPress={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        handleSendMessage();
-                      }
+                              <ListItemAvatar>
+                                <Avatar>
+                                  {person.user.fullName.charAt(0)}{" "}
+                                </Avatar>
+                              </ListItemAvatar>
+                              <ListItemText
+                                primary={
+                                  person.user.id === userId
+                                    ? person.user.fullName + " (You)"
+                                    : person.user.fullName
+                                }
+                              />
+                            </ListItemButton>
+                          </ListItem>
+                        ))}
+                    </List>
+                  </Paper>
+                ) : (
+                  // Personal chat with the selected person
+                  <Paper
+                    sx={{
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      padding: "16px 8px",
                     }}
-                  />
-                  <Button
-                    onClick={handleSendMessage}
-                    variant="contained"
-                    sx={{ ml: 1 }}
                   >
-                    Send
+                    {/* Back Button */}
+                    <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                      <IconButton onClick={goBackToList}>
+                        <ArrowBackIcon />
+                      </IconButton>
+                      <Typography variant="h6" sx={{ ml: 1 }}>
+                        Chat with {selectedPerson.name}
+                      </Typography>
+                    </Box>
+
+                    {/* Scrollable messages area */}
+                    <Box sx={{ flexGrow: 1, overflowY: "auto", mb: 2 }}>
+                      {selectedUserMessages.length === 0 ? (
+                        <Typography variant="body2" color="textSecondary">
+                          No messages yet.
+                        </Typography>
+                      ) : (
+                        selectedUserMessages.map((msg, index) => {
+                          const isSender = msg.user.id === userId;
+                          return (
+                            <Box
+                              key={index}
+                              sx={{
+                                mb: 1,
+                                display: "flex",
+                                justifyContent: isSender
+                                  ? "flex-end"
+                                  : "flex-start",
+                              }}
+                            >
+                              <Box
+                                sx={{
+                                  maxWidth: "70%",
+                                  p: 1.5,
+                                  borderRadius: "12px",
+                                  bgcolor: isSender
+                                    ? "primary.light"
+                                    : "grey.200",
+                                }}
+                              >
+                                <Typography
+                                  variant="subtitle2"
+                                  sx={{ fontWeight: "bold" }}
+                                >
+                                  {isSender ? "You" : msg.user.fullName}{" "}
+                                </Typography>
+                                <Typography variant="body1">
+                                  {msg.message}
+                                </Typography>
+                              </Box>
+                            </Box>
+                          );
+                        })
+                      )}
+                    </Box>
+
+                    {/* Fixed input area */}
+                    <Box sx={{ display: "flex" }}>
+                      <TextField
+                        fullWidth
+                        value={newMessage}
+                        onChange={(e) => setNewMessage(e.target.value)}
+                        placeholder="Type a message"
+                        size="small"
+                        onKeyPress={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            handleSendMessage();
+                          }
+                        }}
+                      />
+                      <Button
+                        onClick={handleSendMessage}
+                        variant="contained"
+                        sx={{ ml: 1 }}
+                      >
+                        Send
+                      </Button>
+                    </Box>
+                  </Paper>
+                )}
+              </>
+            ) : (
+              <Paper sx={{ height: "100%", padding: 2 }}>
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  justifyContent="center"
+                  alignItems="center"
+                  height="100%"
+                >
+                  <Typography
+                    variant="body1"
+                    color="textSecondary"
+                    gutterBottom
+                  >
+                    Please log in to use this feature.
+                  </Typography>
+                  <Button
+                    onClick={redirectToLogIn}
+                    variant="contained"
+                    color="primary"
+                  >
+                    Log In
                   </Button>
                 </Box>
               </Paper>
